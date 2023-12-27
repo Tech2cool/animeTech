@@ -189,13 +189,14 @@ const Video = () => {
         hls.attachMedia(video);
         // hlsRef.current = hls;
         console.log({ currentVideo_1: "currentVideo_1" }, currentVideo)
-      } else {
+      }
+      else if(video.canPlayType('application/vnd.apple.mpegurl')) {
+        video.src = videoSrc[0].url;
+      }
+      else {
         console.log("video src not supported")
       }
       // video.src =videoSrc[0].url;
-      // else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-      //   video.src = videoSrc[0].url;
-      // }
       // setisLoading(false);
     }
   }, [currentVideo])
