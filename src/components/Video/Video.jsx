@@ -112,24 +112,19 @@ const Video = () => {
     }
   };
   const handleResize = () => {
+    console.log("resized called")
     isMobile = window.innerWidth < 480;
 
     if (isMobile) {
-      // ////console.log(window.innerWidth + " - yea, less than 480");
-      // window.removeEventListener('scroll', handleScrollEpisode);
       window.addEventListener('scroll', handleScrollWindow);
 
-      // Clean up the event listener when the component unmounts
       return () => {
         window.removeEventListener('scroll', handleScrollWindow);
       };
     } else {
-      // ////console.log(window.innerWidth + " - no longer less than 480");
-      // document.querySelector(".allEpisodes").removeEventListener('scroll', handleScrollWindow);
       if(allEpisodes && allEpisodes.length>0){
         document.querySelector(".allEpisodes").addEventListener('scroll', handleScrollEpisode);
         
-        // Clean up the event listener when the component unmounts
         return () => {
           document.querySelector(".allEpisodes").addEventListener('scroll', handleScrollEpisode);
         };
@@ -139,8 +134,15 @@ const Video = () => {
 
   useEffect(() => {
     fetchSrc();
-    handleResize();
     setisLoading(true);
+
+  }, [useParams()]);
+
+  useEffect(() => {
+    if (allEpisodes.length > 0) {
+      ////console.log({ allEpisodes: "allEpisode" }, allEpisodes);
+    }
+    handleResize();
     // Add a resize event listener to handle changes
     window.addEventListener('resize', handleResize);
 
@@ -148,12 +150,7 @@ const Video = () => {
     return () => {
       window.removeEventListener('resize', handleResize);
     };
-  }, [useParams()]);
 
-  useEffect(() => {
-    if (allEpisodes.length > 0) {
-      ////console.log({ allEpisodes: "allEpisode" }, allEpisodes);
-    }
   }, [allEpisodes])
 
   useEffect(() => {
@@ -281,7 +278,9 @@ const Video = () => {
       ////console.log("goTOP")
       if (isMobile) {
         window.scroll(0, 0);
+        document.querySelector(".allEpisodes").scroll(0, 0)
       } else {
+        window.scroll(0, 0);
         document.querySelector(".allEpisodes").scroll(0, 0)
       }
 
@@ -290,8 +289,10 @@ const Video = () => {
       ////console.log("goDown")
       if (isMobile) {
         window.scroll(0, document.body.scrollHeight);
+        document.querySelector(".allEpisodes").scrollTop = document.querySelector(".allEpisodes").scrollHeight;
       } else {
         // window.scroll(0,(document.body.scrollHeight-500));
+        window.scroll(0, document.body.scrollHeight);
         document.querySelector(".allEpisodes").scrollTop = document.querySelector(".allEpisodes").scrollHeight;
       }
     }

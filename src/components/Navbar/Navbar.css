@@ -42,6 +42,7 @@
     background-color: var(--clr-light);
     color: var(--clr-dark);
     box-shadow: 0 0 1px var(--clr-gray);
+    cursor: pointer;
 }
 .navbar-bar{
     /* display: flex; */
