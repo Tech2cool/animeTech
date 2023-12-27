@@ -22,12 +22,12 @@
 ## Install Packages
 Use the following command to install the required packages:
 
-```bash
+```bash```
 npm install
 
 # Start Project
 In the project directory, run the following command:
-```bash
+```bash```
 npm npm start
 
 This command launches the app in development mode.
