@@ -11,12 +11,12 @@ const Video = () => {
 
 
   const { episodeID, episodeNum, animeTitle, animeID } = useParams();
-  // console.log(animeID)
+  // //console.log(animeID)
   let { state } = useLocation();
 
   // Destructure the state object
   const { animeTitleNative } = state || "nostate"; // Use default value to handle cases where state is undefined
-  console.log(animeTitleNative)
+  //console.log(animeTitleNative)
   
   const navigateToPlay = (episodeId, episodeNum, animeTitle, animeId) => {
     const url = `/video${episodeId}/${episodeNum}/${animeTitle}/${animeId}`;
@@ -44,24 +44,24 @@ const Video = () => {
   });
   let isMobile;
 
-  // console.log(useParams());
+  // //console.log(useParams());
 
   const fetchSrc = async () => {
 
     const result = await axios.get(`https://gogo-server.vercel.app/source?episodeID=/${encodeURIComponent(episodeID)}`)
-    console.log({ result_data_1: "result.data 1" }, result.data);
+    //console.log({ result_data_1: "result.data 1" }, result.data);
 
     if (result.data.sources) {
       setvideoSrc(result.data.sources);
     } else {
-      console.log({ result_data_1: "no result 1 data" });
+      //console.log({ result_data_1: "no result 1 data" });
     }
 
-    // console.log("result 1 done")
+    // //console.log("result 1 done")
     const result2 = await axios.get(`https://gogo-server.vercel.app/search?title=${encodeURIComponent(animeTitle)}`);
     
     if (result2.data.list.length > 0) {
-      console.log({ result_data_2: "result.data 2" }, result2.data);
+      //console.log({ result_data_2: "result.data 2" }, result2.data);
       
       setValues(value => ({
         ...value,
@@ -75,7 +75,7 @@ const Video = () => {
     }
     else{
       const result22 = await axios.get(`https://gogo-server.vercel.app/search?title=${animeTitleNative}`);
-      console.log({ result_data_22: "result.data 22" }, result22.data);
+      //console.log({ result_data_22: "result.data 22" }, result22.data);
       setValues(value => ({
         ...value,
         Animetitle: animeTitle,
@@ -89,13 +89,13 @@ const Video = () => {
   }
 
   const fetchAllEpisode = async (animID) => {
-    // console.log("FetchAllEpisodes start")
+    // //console.log("FetchAllEpisodes start")
     const result3 = await axios.get(`https://gogo-server.vercel.app/episodes?animeID=${encodeURIComponent(animID)}`)
-    // console.log(result3.data)
-    console.log({ result_data_3: "result.data 3" }, result3.data);
+    // //console.log(result3.data)
+    //console.log({ result_data_3: "result.data 3" }, result3.data);
 
     // if(result3.data.length>0){
-    // console.log("FetchAllEpisodes done")
+    // //console.log("FetchAllEpisodes done")
     setallEpisodes(result3.data);
     // }
   }
@@ -115,7 +115,7 @@ const Video = () => {
     isMobile = window.innerWidth < 480;
 
     if (isMobile) {
-      // console.log(window.innerWidth + " - yea, less than 480");
+      // //console.log(window.innerWidth + " - yea, less than 480");
       // window.removeEventListener('scroll', handleScrollEpisode);
       window.addEventListener('scroll', handleScrollWindow);
 
@@ -124,7 +124,7 @@ const Video = () => {
         window.removeEventListener('scroll', handleScrollWindow);
       };
     } else {
-      // console.log(window.innerWidth + " - no longer less than 480");
+      // //console.log(window.innerWidth + " - no longer less than 480");
       // document.querySelector(".allEpisodes").removeEventListener('scroll', handleScrollWindow);
       if(allEpisodes && allEpisodes.length>0){
         document.querySelector(".allEpisodes").addEventListener('scroll', handleScrollEpisode);
@@ -152,12 +152,12 @@ const Video = () => {
 
   useEffect(() => {
     if (allEpisodes.length > 0) {
-      console.log({ allEpisodes: "allEpisode" }, allEpisodes);
+      //console.log({ allEpisodes: "allEpisode" }, allEpisodes);
     }
   }, [allEpisodes])
 
   useEffect(() => {
-    // console.log(values)
+    // //console.log(values)
     if (animeID !== "") {
       fetchAllEpisode(animeID);
     }
@@ -172,15 +172,15 @@ const Video = () => {
         quality: defaultURL.quality
       }));
       setisLoading(false);
-      console.log({ idk: "video srcc" }, { videoSrc });
+      //console.log({ idk: "video srcc" }, { videoSrc });
     }
   }, [videoSrc])
 
   // useEffect(()=>{
-  //   console.log({vuide:"currentVideo is"},{currentVideo})
+  //   //console.log({vuide:"currentVideo is"},{currentVideo})
   // },[currentVideo])
   useEffect(() => {
-    // console.log(videoSrc)
+    // //console.log(videoSrc)
     const video = videoRef.current;
     const hls = new Hls();
     if (currentVideo.src !== "") {
@@ -188,13 +188,13 @@ const Video = () => {
         hls.loadSource(currentVideo.src)
         hls.attachMedia(video);
         // hlsRef.current = hls;
-        console.log({ currentVideo_1: "currentVideo_1" }, currentVideo)
+        //console.log({ currentVideo_1: "currentVideo_1" }, currentVideo)
       }
       else if(video.canPlayType('application/vnd.apple.mpegurl')) {
         video.src = videoSrc[0].url;
       }
       else {
-        console.log("video src not supported")
+        //console.log("video src not supported")
       }
       // video.src =videoSrc[0].url;
       // setisLoading(false);
@@ -207,70 +207,70 @@ const Video = () => {
     if (videoSrc.length > 0) {
       switch (target.name) {
         case "360p": {
-          console.log("360p");
+          //console.log("360p");
           const defaultURL = videoSrc.find(src => src.quality === "360p");
           setcurrentVideo(val => ({
             ...val,
             src: defaultURL.url,
             quality: defaultURL.quality
           }));
-          console.log({ idk: "360p" }, currentVideo.src);
+          //console.log({ idk: "360p" }, currentVideo.src);
 
           break;
         }
         case "480p": {
-          console.log("480p");
+          //console.log("480p");
           const defaultURL = videoSrc.find(src => src.quality === "480p");
           setcurrentVideo(val => ({
             ...val,
             src: defaultURL.url,
             quality: defaultURL.quality
           }));
-          console.log({ idk: "480p" }, currentVideo.src);
+          //console.log({ idk: "480p" }, currentVideo.src);
           break;
         }
         case "720p": {
-          console.log("720p");
+          //console.log("720p");
           const defaultURL = videoSrc.find(src => src.quality === "720p");
           setcurrentVideo(val => ({
             ...val,
             src: defaultURL.url,
             quality: defaultURL.quality
           }));
-          console.log({ idk: "720p" }, currentVideo.src);
+          //console.log({ idk: "720p" }, currentVideo.src);
           break;
         }
         case "1080p": {
-          console.log("1080p");
+          //console.log("1080p");
           const defaultURL = videoSrc.find(src => src.quality === "1080p");
           setcurrentVideo(val => ({
             ...val,
             src: defaultURL.url,
             quality: defaultURL.quality
           }));
-          console.log({ idk: "1080p" }, currentVideo.src);
+          //console.log({ idk: "1080p" }, currentVideo.src);
           break;
         }
         case "backup": {
-          console.log("backup");
+          //console.log("backup");
           const defaultURL = videoSrc.find(src => src.quality === "backup");
           setcurrentVideo(val => ({
             ...val,
             src: defaultURL.url,
             quality: defaultURL.quality
           }));
-          console.log({ idk: "backup" }, currentVideo.src);
+          //console.log({ idk: "backup" }, currentVideo.src);
           break;
         }
         default: {
-          console.log("default");
+          //console.log("default");
           const defaultURL = videoSrc.find(src => src.quality === "default");
           setcurrentVideo(val => ({
             ...val,
             src: defaultURL.url,
             quality: defaultURL.quality
           }));
-          console.log({ idk: "default" }, currentVideo.src);
+          //console.log({ idk: "default" }, currentVideo.src);
         }
       }
 
@@ -278,7 +278,7 @@ const Video = () => {
   }
   const handleNavTPB = (e) => {
     if (e.currentTarget.name === "goTop") {
-      console.log("goTOP")
+      //console.log("goTOP")
       if (isMobile) {
         window.scroll(0, 0);
       } else {
@@ -287,7 +287,7 @@ const Video = () => {
 
     }
     if (e.currentTarget.name === "goDown") {
-      console.log("goDown")
+      //console.log("goDown")
       if (isMobile) {
         window.scroll(0, document.body.scrollHeight);
       } else {
