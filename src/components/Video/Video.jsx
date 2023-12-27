@@ -300,7 +300,7 @@ const Video = () => {
     <div className='video-container'>
       {
         isLoading ? (
-          <Loading LoadingType={"ClimbingBoxLoader"} color={"red"}/>
+          <Loading LoadingType={"HashLoader"} color={"red"}/>
         ) :
           (
               <div className="video">
