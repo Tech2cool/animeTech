@@ -23,7 +23,7 @@
 Use the following command to install the required packages:
 
 ```bash
-npm install```
+npm install
 
 # Start Project
 In the project directory, run the following command:
@@ -34,7 +34,7 @@ This command launches the app in development mode.
 Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 
 ### Demo Screeshots
-    
+
 ### Desktop Home Page
 ![AnimeTech Desktop Demo](./readme-images/home.png "Desktop Home")
 
