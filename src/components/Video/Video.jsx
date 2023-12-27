@@ -42,7 +42,7 @@ const Video = () => {
 
   const fetchSrc = async () => {
 
-    const result = await axios.get(`/source?episodeID=/${encodeURIComponent(episodeID)}`)
+    const result = await axios.get(`https://gogo-server.vercel.app/source?episodeID=/${encodeURIComponent(episodeID)}`)
     console.log({ result_data_1: "result.data 1" }, result.data);
 
     if (result.data.sources) {
@@ -52,7 +52,7 @@ const Video = () => {
     }
 
     // console.log("result 1 done")
-    const result2 = await axios.get(`/search?title=${encodeURIComponent(animeTitle)}`);
+    const result2 = await axios.get(`https://gogo-server.vercel.app/search?title=${encodeURIComponent(animeTitle)}`);
     console.log({ result_data_2: "result.data 2" }, result2.data);
 
     if (result2.data.list.length > 0) {
@@ -72,7 +72,7 @@ const Video = () => {
 
   const fetchAllEpisode = async (animID) => {
     // console.log("FetchAllEpisodes start")
-    const result3 = await axios.get(`/episodes?animeID=${encodeURIComponent(animID)}`)
+    const result3 = await axios.get(`https://gogo-server.vercel.app/episodes?animeID=${encodeURIComponent(animID)}`)
     // console.log(result3.data)
     console.log({ result_data_3: "result.data 3" }, result3.data);
 

@@ -15,7 +15,7 @@ const Popular = () => {
   const [isLoading, setisLoading] = useState(false);
 
     const fetchPupular= async(page)=>{
-        const result = await axios.get(`/popular?page=${page}`)
+        const result = await axios.get(`https://gogo-server.vercel.app/popular?page=${page}`)
 
         console.log({msg:"popular"},result.data);
         if(result.data.list&& result.data.list.length>0){

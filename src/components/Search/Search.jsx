@@ -16,7 +16,7 @@ const Search = () => {
 
   const fetchData = async(titlte,page)=>{
     try {
-      const result = await axios.get(`/search?title=${encodeURIComponent(titlte)}&page=${page}`)
+      const result = await axios.get(`https://gogo-server.vercel.app/search?title=${encodeURIComponent(titlte)}&page=${page}`)
       if(result.data){
         console.log({result1_Data:"result1_Data"}, result.data);
         setAnime(result.data.list);

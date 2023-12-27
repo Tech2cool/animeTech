@@ -14,7 +14,7 @@ const AnimeDetails = () => {
 
   // http://localhost:8081/anime-details?animeID=one-piece
   const fetchAnimeDetails = async (animeId) => {
-    const result = await axios.get(`/anime-details?animeID=${animeId}`)
+    const result = await axios.get(`https://gogo-server.vercel.app/anime-details?animeID=${animeId}`)
     console.log({ animeD: "anime details" }, result.data);
     setAnimeDetail(result.data);
     // if(result.data){
