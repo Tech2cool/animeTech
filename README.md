@@ -26,7 +26,8 @@ Use the following command to install the required packages:
 
 # Start Project
 In the project directory, run the following command:
-``npm npm start``
+
+``npm start``
 
 This command launches the app in development mode.
 Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
