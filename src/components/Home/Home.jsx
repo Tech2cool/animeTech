@@ -21,11 +21,11 @@ const Home = () => {
     try {
       const result = await axios.get(`https://gogo-server.vercel.app/recent?page=${pageNum}&perPage=${perPage}`);
 
-      console.log({result:"result 1"},result.data);
+      //console.log({result:"result 1"},result.data);
       setAnime(result.data.list);
       setTotalPage(result.data.totalPages);
     } catch (error) {
-      console.log(error);
+      //console.log(error);
     }
     setisLoading(false);
   }
@@ -43,14 +43,14 @@ const Home = () => {
 
   // useEffect anime change only
   useEffect(()=>{
-    // console.log(anime);
+    // //console.log(anime);
   },[anime])
 
   const handleNavigation= (e)=>{
     if(e.target.name === "prev"){
       if(currentPage < 1) return;
 
-        console.log("prev");
+        //console.log("prev");
         // fetchLatest(currentPage-1);
         navigate(`/${currentPage - 1}`)
         // setCurrentPage(currentPage-1);
@@ -62,7 +62,7 @@ const Home = () => {
       // fetchLatest(currentPage+1);
       navigate(`/${currentPage + 1}`)
       // setCurrentPage(currentPage+1);
-      console.log("next")
+      //console.log("next")
       // setisLoading(true);
     }
   }
@@ -83,7 +83,7 @@ const Home = () => {
                 to={`/video/${anime.episodeId}/${anime.episodeNum}/${
                   anime.animeTitle&& encodeURIComponent(anime.animeTitle[0].english&& anime.animeTitle[0].english?anime.animeTitle[0].english
                     :anime.animeTitle[0].english_jp&& anime.animeTitle[0].english_jp)}/${anime.animeID}`}
-                state={{animeTitleNative:encodeURIComponent(anime.animeTitle[0].english_jp)}}
+                state={{animeTitleNative: anime.animeTitle[0].english_jp&& encodeURIComponent(anime.animeTitle[0].english_jp)}}
                 key={i}>
                 <AnimeCard anime={anime}/>
                 </Link>
