@@ -19,21 +19,22 @@
 
 # Getting Started with Create React App
 
-Run npm install or npm i to install the packages
+## Install Packages
+Use the following command to install the required packages:
 
-### `npm install`
+```bash
+npm install```
 
-## Available Scripts
+# Start Project
+In the project directory, run the following command:
+```bash
+npm npm start
 
-In the project directory, you can run:
-
-### `npm start`
-
-Runs the app in the development mode.\
+This command launches the app in development mode.
 Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 
 ### Demo Screeshots
-
+    
 ### Desktop Home Page
 ![AnimeTech Desktop Demo](./readme-images/home.png "Desktop Home")
 
@@ -51,8 +52,10 @@ Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 
 ### Desktop Home Page
 ![AnimeTech Android Demo](./readme-images/phone_home.png "Android Home")
+
 ### Desktop Search Page
 ![AnimeTech Android Demo](./readme-images/phone_search.png "Android Search")
+
 ### Desktop Popular Anime Page
 ![AnimeTech Android Demo](./readme-images/phone_popular.png "Android Popular")
 
