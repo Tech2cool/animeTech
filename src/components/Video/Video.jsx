@@ -335,10 +335,10 @@ const Video = () => {
                 </div>
                 <div className="video-home">
                   <Link to={`/`} >
-                    <i className='fa-solid fa-arrow-left'></i>
+                    <i className='fa-solid fa-home'></i>
                   </Link>
                   <Link to={`/anime-details/${values.AnimeID}`} >
-                    <i className='fa-solid fa-home'></i>
+                    <i className='fa-solid fa-bars'></i>
                   </Link>
                   </div>
               </div>
