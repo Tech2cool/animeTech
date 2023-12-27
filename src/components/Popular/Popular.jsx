@@ -58,7 +58,7 @@ const Popular = () => {
       <h1>Popular Anime</h1>
       {
         isLoading?(
-          <Loading />
+          <Loading LoadingType={"ScaleLoader"} color={"red"}/>
         ):(
           <div className="popular-results">
           {
