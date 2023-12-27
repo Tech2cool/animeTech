@@ -69,6 +69,7 @@
     /* height: 100%; */
     object-fit: contain;
     object-position: center;
+    outline: none;
 }
 .video-qualities{
     padding: 10px;
