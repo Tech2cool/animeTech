@@ -334,7 +334,7 @@ const Video = () => {
                   <div className={`video-episode ${values.EpisodeNumber === ep.number ? 'active' : ''}`}
                     key={ep.number}
                     onClick={() => {
-                      navigateToPlay(ep.id, ep.number, encodeURIComponent(values.Animetitle), encodeURIComponent(animeID))
+                      navigateToPlay(ep.id, ep.number, encodeURIComponent(values.Animetitle), animeID)
                     }}
                   >
                     {/* <p>episode title</p> */}

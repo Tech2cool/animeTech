@@ -80,7 +80,8 @@ const Home = () => {
             anime && anime.length >0?(
               anime.map((anime, i)=>(
                 <Link
-                to={`/video/${anime.episodeId}/${anime.episodeNum}/${anime.animeTitle}/${anime.animeID}`}
+                to={`/video/${anime.episodeId}/${anime.episodeNum}/${
+                  anime.animeTitle&& anime.animeTitle[0].english && anime.animeTitle[0].english?anime.animeTitle[0].english:anime.animeTitle[0].english_jp}/${anime.animeID}`}
                 key={i}>
                 <AnimeCard anime={anime}/>
                 </Link>
