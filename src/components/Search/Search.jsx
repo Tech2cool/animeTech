@@ -64,15 +64,19 @@ const Search = () => {
       </div>
       <div className="search-results">
         {
-          anime && anime.length>0?(
-            anime.map((anime,i)=>(
-              <Link
-              to={`/anime-details/${anime.animeID}`} 
-              key={i}>
-              <AnimeCard anime={anime}/>
-              </Link>
-            ))
-          ):""
+          title?(
+            anime && anime.length>0?(
+              anime.map((anime,i)=>(
+                <Link
+                to={`/anime-details/${anime.animeID}`} 
+                key={i}>
+                <AnimeCard anime={anime}/>
+                </Link>
+              ))
+            ): <div className="text"><p>Not Found</p></div>  
+          ):(
+            <div className="text"><p>Search your anime ex.(one piece)</p></div>
+          )
         }
       </div>
       <div className="search-navigation">

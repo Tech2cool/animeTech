@@ -25,6 +25,11 @@
     background-color: transparent;
     flex: 2;
 }
+.text{
+    width: 100%;
+    text-align: center;
+    margin: 20px 0;
+}
 .searchbar i{
     padding: 10px 15px;
     font-size: 18px;
