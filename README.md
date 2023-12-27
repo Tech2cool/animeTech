@@ -40,6 +40,9 @@ Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 ### Desktop Search Page
 ![AnimeTech Desktop Demo](./readme-images/search.png "Desktop Search")
 
+### Desktop AnimeDetails Page
+![AnimeTech Desktop Demo](./readme-images/animeDetails.png "Desktop AnimeDetails")
+
 ### Desktop Popular Anime Page
 ![AnimeTech Desktop Demo](./readme-images/popular.png "Desktop Popular")
 
@@ -54,6 +57,9 @@ Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 
 ### Desktop Search Page
 ![AnimeTech Android Demo](./readme-images/phone_search.png "Android Search")
+
+### Desktop AnimeDetails Page
+![AnimeTech Desktop Demo](./readme-images/phone_animeDetails.png "Desktop AnimeDetails")
 
 ### Desktop Popular Anime Page
 ![AnimeTech Android Demo](./readme-images/phone_popular.png "Android Popular")
