@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useParams, useNavigate,Link } from 'react-router-dom';
+import { useParams, useNavigate,Link,useLocation } from 'react-router-dom';
 import axios from 'axios';
 import Hls from 'hls.js';
 import Loading from '../Loading/Loading';
@@ -11,7 +11,13 @@ const Video = () => {
 
 
   const { episodeID, episodeNum, animeTitle, animeID } = useParams();
-  console.log(animeID)
+  // console.log(animeID)
+  let { state } = useLocation();
+
+  // Destructure the state object
+  const { animeTitleNative } = state || "nostate"; // Use default value to handle cases where state is undefined
+  console.log(animeTitleNative)
+  
   const navigateToPlay = (episodeId, episodeNum, animeTitle, animeId) => {
     const url = `/video${episodeId}/${episodeNum}/${animeTitle}/${animeId}`;
     navigate(url);
@@ -53,19 +59,31 @@ const Video = () => {
 
     // console.log("result 1 done")
     const result2 = await axios.get(`https://gogo-server.vercel.app/search?title=${encodeURIComponent(animeTitle)}`);
-    console.log({ result_data_2: "result.data 2" }, result2.data);
-
+    
     if (result2.data.list.length > 0) {
-
+      console.log({ result_data_2: "result.data 2" }, result2.data);
+      
       setValues(value => ({
         ...value,
         Animetitle: animeTitle,
         AnimeID: animeID,
-        imgURL: result2.data.list[0].img,
+        imgURL: result2.data.list[0].img&& result2.data.list[0].img?result2.data.list[0].img:"",
         EpisodeNumber: Number(episodeNum),
         // EpisodeTitle: result.data.animeTitle
       }));
 
+    }
+    else{
+      const result22 = await axios.get(`https://gogo-server.vercel.app/search?title=${animeTitleNative}`);
+      console.log({ result_data_22: "result.data 22" }, result22.data);
+      setValues(value => ({
+        ...value,
+        Animetitle: animeTitle,
+        AnimeID: animeID,
+        imgURL:result2.data.list[0].img&& result2.data.list[0].img?result2.data.list[0].img:"",
+        EpisodeNumber: Number(episodeNum),
+        // EpisodeTitle: result.data.animeTitle
+      }));
     }
     // setisLoading(false);
   }
@@ -288,13 +306,13 @@ const Video = () => {
 
                 <div className="video-title">
                   <div className="video-poster">
-                    <img src={values.imgURL} alt={values.title} />
+                    <img src={values.imgURL && values.imgURL} alt={values.Animetitle && values.Animetitle} />
                   </div>
 
                   <div className="video-info">
-                    <p id='viat'>{values.Animetitle.toLowerCase()}</p>
+                    <p id='viat'>{values.Animetitle && values.Animetitle.toLowerCase()}</p>
                     <div className="video-ep-num">
-                      <p>Episode <span>{values.EpisodeNumber}</span></p>
+                      <p>Episode <span>{values.EpisodeNumber && values.EpisodeNumber}</span></p>
                       <p id='epTitle'>{values.EpisodeTitle && values.EpisodeTitle.includes(values.EpisodeNumber) ? "" : values.EpisodeTitle}</p>
                     </div>
 

@@ -81,7 +81,9 @@ const Home = () => {
               anime.map((anime, i)=>(
                 <Link
                 to={`/video/${anime.episodeId}/${anime.episodeNum}/${
-                  anime.animeTitle&& anime.animeTitle[0].english && anime.animeTitle[0].english?anime.animeTitle[0].english:anime.animeTitle[0].english_jp}/${anime.animeID}`}
+                  anime.animeTitle&& encodeURIComponent(anime.animeTitle[0].english&& anime.animeTitle[0].english?anime.animeTitle[0].english
+                    :anime.animeTitle[0].english_jp&& anime.animeTitle[0].english_jp)}/${anime.animeID}`}
+                state={{animeTitleNative:encodeURIComponent(anime.animeTitle[0].english_jp)}}
                 key={i}>
                 <AnimeCard anime={anime}/>
                 </Link>

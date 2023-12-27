@@ -14,8 +14,11 @@ const Navbar = () => {
   return (
     <div className={`navbar-container`}>
       <div className="navbar-logo">
+        <Link
+        to={`/`}>
         <span>Anime</span>
         <span style={{color:"#0095ee"}}>Tech2</span>
+        </Link>
       </div>
       <ul>
         <li className={`navbar-li ${(location.pathname==="/" || location.pathname.match(/^\/\d+$/))?'active':''}`}><Link to={`/`}><i className={`fa-solid fa-tv`}></i>Latest</Link></li>
