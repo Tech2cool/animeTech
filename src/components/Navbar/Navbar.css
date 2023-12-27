@@ -1,0 +1,112 @@
+.navbar-container{
+    box-shadow: 0 0 1px var(--clr-gray);
+    /* background-color: antiquewhite; */
+    font-family: var(--font-Poppins);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 10%;
+    margin-bottom: 8px;
+}
+.navbar-logo{
+    font-size: 20px;
+    font-weight: 700;
+}
+.navbar-container ul{
+    list-style-type: none;
+    display: flex;
+    gap: 10px;
+}
+.navbar-li{
+    padding: 5px 10px;
+}
+.navbar-li.active a{
+    color: var(--clr-orange);
+    font-size: 16px;
+    font-weight: 600;
+}
+.navbar-li a i{
+    padding: 0 5px;
+}
+.navbar-profile{
+    width: 45px;
+    height: 45px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    font-size: 1.2rem;
+    border-radius: 50%;
+    border: none;
+    outline: none;
+    background-color: var(--clr-light);
+    color: var(--clr-dark);
+    box-shadow: 0 0 1px var(--clr-gray);
+}
+.navbar-bar{
+    /* display: flex; */
+    display: none;
+    font-size: 25px;
+    align-items: center;
+}
+@media screen and (min-width:768px) and (max-width:1024px) {
+    .navbar-container{
+        padding: 10px 2%;
+    }
+}
+@media screen and (min-width:481px) and (max-width:700px) {
+    .navbar-container{
+        padding: 10px 2%;
+        flex-wrap: wrap;
+        gap: 5px;
+        align-items: center;
+    }
+    .navbar-logo{
+        font-size: 1.15rem;
+    }
+    /* .navbar-container ul{
+        display: none;
+    } */
+    .navbar-profile{
+       /* display: none; */
+    }
+}
+@media screen and (min-width:320px) and (max-width:480px) {
+    .navbar-container{
+        padding: 10px 15px;
+        width: 100%;
+        min-height: 70px;
+    }
+    .navbar-logo{
+        font-size: 1.3rem;
+    }
+    .navbar-container ul{
+        display: none;
+    }
+    .navbar-profile{
+       display: none;
+    }
+    .navbar-bar{
+        display: flex;
+    }
+}
+
+@media screen and (max-width:320px){
+    .navbar-container{
+        padding: 10px 15px;
+        width: 100%;
+    }
+    .navbar-logo{
+        font-size: 1.15rem;
+    }
+    .navbar-container ul{
+        display: none;
+    }
+    .navbar-profile{
+       display: none;
+    }
+    .navbar-bar{
+        display: flex;
+    }
+
+}
