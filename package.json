@@ -6,6 +6,7 @@
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
+    "@videojs/themes": "^1.0.1",
     "axios": "^1.6.2",
     "hls.js": "^1.4.14",
     "react": "^18.2.0",
@@ -13,6 +14,9 @@
     "react-router-dom": "^6.21.1",
     "react-scripts": "5.0.1",
     "react-spinners": "^0.13.8",
+    "videojs-hotkeys": "^0.2.28",
+    "videojs-mobile-ui": "^1.1.1",
+    "videojs-seek-buttons": "^4.0.3",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
@@ -38,5 +42,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "video.js": "^8.6.1"
   }
 }

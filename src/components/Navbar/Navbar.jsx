@@ -6,7 +6,7 @@ import "./Navbar.css";
 
 const Navbar = () => {
   const location = useLocation()
-  console.log(location.pathname);
+  // console.log(location.pathname);
   
 
   // useEffect(()=>{
