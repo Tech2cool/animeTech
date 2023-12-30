@@ -211,7 +211,8 @@
         /* flex: 1; */
         /* justify-content: flex-start; */
         /* align-items: flex-start; */
-        min-width: 300px;
+        width: 300px;
+        max-width: 310px;
     }
     .related-episodes{
         width: 100%;
@@ -274,6 +275,7 @@
     }
     .allEpisodes{
         margin-bottom: 80px;
+        max-width: none;
     }
     #vid-epnum{
         font-size: 14px;
@@ -287,6 +289,7 @@
         /* min-height: calc(min-content + 30px); */
     }
     .allEpisodes{
+        max-width: none;
         margin-bottom: 80px;
     }
     #vid-epnum{
