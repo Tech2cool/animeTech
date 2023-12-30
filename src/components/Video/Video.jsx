@@ -8,7 +8,7 @@ import 'videojs-mobile-ui/dist/videojs-mobile-ui.css';
 import 'videojs-mobile-ui';
 import "./Video.css";
 import "videojs-hotkeys";
-
+import "videojs-seek-buttons";
 const Video = () => {
   const navigate = useNavigate();
 
@@ -210,18 +210,20 @@ const Video = () => {
         aspectRatio: '16:9',
         userActions: {
           click: true,
-          hotkeys: (event) => {
-            if (event.which === 88) {
-              videoPlayer.pause();
-            }
-          },
+          // hotkeys: true,
         },
         playbackRates: [0.25, 0.5, 1, 1.5, 2, 2.5, 3, 4],
         controlBar: {
           fullscreenToggle: true,
-        },
+          progressControl: true,
+          seekToLive: true,
+        },    
       });
-
+      // videoPlayer.seekButtons({
+      //   forward: 10,
+      //   back: 10
+      // });
+    
       videoPlayer.mobileUi({
         fullscreen: {
           enterOnRotate: true,
