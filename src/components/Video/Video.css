@@ -90,6 +90,7 @@
     cursor: pointer;
     text-transform: capitalize;
     font-weight: 600;
+    display: none;
 }
 .video-qualities .vidSrc.active{
     background-color: var(--clr-orange);
