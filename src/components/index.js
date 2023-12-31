@@ -6,5 +6,6 @@ import NavbarBottom from "./NavbarBottom/NavbarBottom";
 import Loading from './Loading/Loading';
 import Search from './Search/Search';
 import Popular from './Popular/Popular';
+import Genre from './Genre/Genre';
 
-export {Home, AnimeDetails, Navbar, NavbarBottom, Popular,Search, Video, Loading}
+export {Home, AnimeDetails, Navbar, NavbarBottom, Popular,Search, Video, Loading,Genre}

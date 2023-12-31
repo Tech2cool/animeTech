@@ -62,7 +62,7 @@
     .Anime-card{
         width: 99%;
         max-height: 110px;
-        /* margin: 10px; */
+        margin: 8px 4px;
     }
     .anime-title{
         font-size: 16px;
