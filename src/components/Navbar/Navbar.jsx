@@ -20,7 +20,7 @@ const Navbar = () => {
         <Link
         to={`/`}>
         <span>Anime</span>
-        <span style={{color:"var(--clr-orange);"}}>Tech</span>
+        <span style={{color:"rgb(255, 123, 0)"}}>Tech</span>
         </Link>
       </div>
       <ul>
