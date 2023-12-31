@@ -1,14 +1,17 @@
 import React from 'react';
 import {Link, useLocation} from "react-router-dom";
+import { useLanguage } from '../../context/langContext';
 
 import "./Navbar.css";
 
 
 const Navbar = () => {
   const location = useLocation()
+
+  const { currentLang, toggleLanguage } = useLanguage();
+
   // console.log(location.pathname);
   
-
   // useEffect(()=>{
   // })
   return (
@@ -26,11 +29,10 @@ const Navbar = () => {
         <li className={`navbar-li ${location.pathname==="/anime-list"?'active':''}`}><Link to={`/anime-list`}><i className={`fa-solid fa-list`}></i>Anime List</Link></li>
         <li className={`navbar-li ${location.pathname==="/popular"?'active':''}`}><Link to={`/popular`}><i className={`fa-solid fa-fire`}></i>Popular</Link></li>
       </ul>
-      <div className="navbar-profile">
-        <i className='fa-solid fa-user'></i>
-      </div>
-      <div className="navbar-bar">
-        <i className='fa-solid fa-bars' onClick={()=>alert("not added yet")}></i>
+      <div className={`navbar-bar ${currentLang ==="en"?"":"active"}`}>
+        <button type="button" onClick={toggleLanguage}>EN</button>
+        <button type="button" onClick={toggleLanguage}>JP</button>
+        {/* <i className='fa-solid fa-bars' onClick={()=>alert("not added yet")}></i> */}
       </div>
     </div>
   )

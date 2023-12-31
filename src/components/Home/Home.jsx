@@ -81,15 +81,15 @@ const Home = () => {
                 <Link
                 key={i}
                 to={`/video/${anime.episodeId}/${anime.episodeNum}/${
-                  anime.animeTitle&& encodeURIComponent(anime.animeTitle.english&& anime.animeTitle.english)||
-                  encodeURIComponent(anime.animeTitle.english_jp&& anime.animeTitle.english_jp)}/${anime.animeID}`}
+                  (anime.animeTitle&&encodeURIComponent(anime.animeTitle.english_jp&& anime.animeTitle.english_jp))||
+                  (anime.animeTitle&& encodeURIComponent(anime.animeTitle.english&& anime.animeTitle.english))}/${anime.animeID}`}
 
                 state={{animeTitleNative: anime.animeTitle.english_jp&& encodeURIComponent(anime.animeTitle.english_jp)}}
                 >
                 <AnimeCard anime={anime}/>
                 </Link>
               ))
-            ): "Not found OR Loading"
+            ): "Nothing to see here.."
           }
         </div>
         )
