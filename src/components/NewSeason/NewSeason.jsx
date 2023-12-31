@@ -47,7 +47,7 @@ const NewSeason = () => {
       // setisLoading(true);
     }
     if (e.currentTarget.name === "next") {
-      if (currentPage < 1 || currentPage > totalPage)
+      if (currentPage < 1 || currentPage >= totalPage)
         return;
       fetchPupular(currentPage + 1);
       // navigate(`/${currentPage + 1}`)
@@ -81,11 +81,20 @@ const NewSeason = () => {
       }
 
       <div className="newSeason-navigation">
-        <button type="button" name='prev' onClick={handleNavigation}>Prev</button>
-        <div className="currentPage">
-          <p>{currentPage}</p>
-        </div>
-        <button type="button" name='next' onClick={handleNavigation}>Next</button>
+        {
+              currentPage > 1 &&(
+                <button type="button" name='prev'onClick={handleNavigation}>Prev</button>
+              )
+            }
+          <div className="currentPage">
+            <p>{currentPage}</p>
+          </div>
+          { 
+            currentPage < totalPage &&(
+              <button type="button" name='next'onClick={handleNavigation}>Next</button>
+            )
+          }
+      
       </div>
 
     </div>
