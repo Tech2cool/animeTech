@@ -184,7 +184,7 @@ const Video = () => {
   }, [values.AnimeID])
 
   useEffect(() => {
-    if (videoSrc.length > 0) {
+    if (videoSrc&& videoSrc.length > 0) {
       const defaultURL = videoSrc.find(src => src.quality === "default");
       // console.log({defaultURL})
       if(defaultURL !==""){
@@ -425,7 +425,7 @@ const Video = () => {
         let prevEpisodeID = episodeID.replace(currentEpNumb, prevEpisodeNum);
         console.log(prevEpisodeID);
 
-        let prevAnimeTitle = values.Animetitle;
+        let prevAnimeTitle = values.Animetitle.english_jp?values.Animetitle.english_jp:values.Animetitle.english;
         // let prevIsDub = isDub;
 
         // navigateToPlay(ep.id, ep.number, encodeURIComponent(values.Animetitle), values.AnimeID)
@@ -445,7 +445,7 @@ function handleNext(){
         let nextEpisodeID = episodeID.replace(currentEpNumb, nextEpisodeNum);
         console.log(nextEpisodeID);
 
-        let nextAnimeTitle = values.Animetitle;
+        let nextAnimeTitle = values.Animetitle.english_jp?values.Animetitle.english_jp:values.Animetitle.english;
         // let nextIsDub = isDub;
 
         navigateToPlay("/"+nextEpisodeID,nextEpisodeNum,encodeURIComponent(nextAnimeTitle),values.AnimeID);
@@ -473,9 +473,9 @@ function handleNext(){
                   <div className="video-info">
                     <p id='viat'>{
                       currentLang === "en"?(
-                        (values.Animetitle && (values.Animetitle.english && values.Animetitle.english))
+                        (values.Animetitle && (values.Animetitle.english && values.Animetitle.english?values.Animetitle.english:values.Animetitle.english_jp))
                       ):(
-                        values.Animetitle && (values.Animetitle.english_jp && values.Animetitle.english_jp))
+                        values.Animetitle && (values.Animetitle.english_jp && values.Animetitle.english_jp?values.Animetitle.english_jp:values.Animetitle.japanese))
                     }</p>
                     <div className="video-ep-num">
                       <p>Episode <span>{values.EpisodeNumber && values.EpisodeNumber}</span></p>
