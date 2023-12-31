@@ -3,13 +3,12 @@ import {Link} from "react-router-dom";
 import axios from 'axios';
 import AnimeCard from '../AnimeCard/AnimeCard';
 import Loading from '../Loading/Loading';
-import { useLocation, useParams, useNavigate } from 'react-router-dom';
+import {useParams, useNavigate } from 'react-router-dom';
 
 import "./Home.css";
 
 const Home = () => {
   const navigate = useNavigate();
-  const location = useLocation();
   const {page} = useParams();
 
   const [anime, setAnime] = useState([]);

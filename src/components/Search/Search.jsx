@@ -1,9 +1,10 @@
 import React,{useState, useEffect} from 'react'
 import axios from 'axios';
 
-import {Link, useNavigate} from 'react-router-dom';
+import {Link} from 'react-router-dom';
 
 import AnimeCard from "../AnimeCard/AnimeCard";
+import Loading from '../Loading/Loading';
 
 import './Search.css';
 
@@ -13,28 +14,41 @@ const Search = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPage, setTotalPage] = useState(null);
   const [title, settitle] = useState('');
+  const [isLoading, setisLoading] = useState(false);
 
   const fetchData = async(titlte,page)=>{
     try {
+      setisLoading(true);
       const result = await axios.get(`https://gogo-server.vercel.app/search?title=${encodeURIComponent(titlte)}&page=${page}`)
       if(result.data){
         console.log({result1_Data:"result1_Data"}, result.data);
         setAnime(result.data.list);
         setTotalPage(result.data.totalPages);
       }
+      setisLoading(false)
     } catch (error) {
       console.log(error);
+      setisLoading(false)
     }
   }
 
-  useEffect(()=>{
-    fetchData(title,1)
-  },[])
+  // useEffect(()=>{
+  //   fetchData("one piece",1)
+  // },[])
   useEffect(()=>{
     setTimeout(() => {
       fetchData(title,currentPage);
     }, 200);
-  },[currentPage, title])
+    // window.scroll({behavior:"instant"})
+    // window.scroll(0,0)
+  },[currentPage])
+
+  useEffect(()=>{
+    setTimeout(() => {
+      fetchData(title,1);
+    }, 200);
+  },[title])
+
 
   const handleNavigation= (e)=>{
     if(e.target.name === "prev"){
@@ -47,7 +61,7 @@ const Search = () => {
         // setisLoading(true);
     }
     if(e.target.name === "next"){
-      if(currentPage < 1 || currentPage > totalPage) 
+      if(currentPage < 1 || currentPage >= totalPage) 
       return;
       // fetchData(currentPage+1);
       // navigate(`/${currentPage + 1}`)
@@ -62,30 +76,54 @@ const Search = () => {
         <input type="text" name="search" id="search" placeholder='search..' value={title} onChange={(e)=> settitle(e.target.value)}/>
         <i className='fa-solid fa-search'></i>
       </div>
-      <div className="search-results">
-        {
-          title?(
-            anime && anime.length>0?(
-              anime.map((anime,i)=>(
-                <Link
-                to={`/anime-details/${anime.animeID}`} 
-                key={i}>
-                <AnimeCard anime={anime}/>
-                </Link>
-              ))
-            ): <div className="text"><p>Not Found</p></div>  
-          ):(
-            <div className="text"><p>Search your anime ex.(one piece)</p></div>
-          )
-        }
-      </div>
-      <div className="search-navigation">
-        <button type="button" name='prev'onClick={handleNavigation}>Prev</button>
-        <div className="currentPage">
-          <p>{currentPage}</p>
+      {
+        isLoading?(
+          <Loading LoadingType={"ScaleLoader"} color={"red"}/>
+        ):(
+          <div className="search-results">
+          {
+            title?(
+              anime && anime.length>0?(
+                <>
+              {
+                anime.map((anime,i)=>(
+                  <Link
+                  to={`/anime-details/${anime.animeID}`} 
+                  key={i}>
+                  <AnimeCard anime={anime}/>
+                  </Link>
+                ))
+              }
+                </>
+              ): <div className="text"><p>Not Found</p></div>  
+            ):(
+              <div className="text"><p>Search your anime ex.(one piece)</p></div>
+            )
+          }
+        </div>  
+        )
+      }
+      {
+        anime && anime.length >0?(
+          <div className="search-navigation">
+            {
+              currentPage > 1 &&(
+                <button type="button" name='prev'onClick={handleNavigation}>Prev</button>
+              )
+            }
+          <div className="currentPage">
+            <p>{currentPage}</p>
+          </div>
+          { 
+            currentPage < totalPage &&(
+              <button type="button" name='next'onClick={handleNavigation}>Next</button>
+            )
+          }
         </div>
-        <button type="button" name='next'onClick={handleNavigation}>Next</button>
-      </div>
+
+        ):""
+      }
+
     </div>
   )
 }

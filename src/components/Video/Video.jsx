@@ -12,7 +12,7 @@ import "videojs-seek-buttons";
 const Video = () => {
   const navigate = useNavigate();
 
-  const { episodeID, episodeNum, animeTitle, animeID } = useParams();
+  const { episodeID, episodeNum, animeTitle } = useParams();
   // ////console.log(animeID)
   let { state } = useLocation();
 
@@ -100,6 +100,7 @@ const Video = () => {
     try {
       const result3 = await axios.get(`https://gogo-server.vercel.app/episodes?animeID=${encodeURIComponent(animID)}` )
       setallEpisodes(result3.data);
+      console.log(result3.data)
       
     } catch (error) {
       console.error('Error:', error);
@@ -116,6 +117,8 @@ const Video = () => {
   }
   const videoRef = useRef(null);
   const hlsRef = useRef(null);
+  const storageKey = `videoPlaybackTime_${episodeID}`;
+
   const handleScrollWindow = () => {
     const scrollThreshold = 300;
     setShowScrollIndicator(window.scrollY > scrollThreshold);
@@ -217,6 +220,8 @@ const Video = () => {
           fullscreenToggle: true,
           progressControl: true,
           seekToLive: true,
+          // timeDivider: true, // Show the time divider (default is true)
+          // durationDisplay: true, // Show the duration display (default is true)
         },    
       });
       // videoPlayer.seekButtons({
@@ -270,14 +275,32 @@ const Video = () => {
             video.src = videoSrc[0].url;
           }
           console.log("if"+{crrr:currentVideo.src},{oldVideoURL})
-          
+          const storedTime = localStorage.getItem(storageKey);
+          if (storedTime && video) {
+            video.currentTime = parseFloat(storedTime);
+          }      
         }
     }
   }, [currentVideo]);
 
+  // useEffect(() => {
+  //   const storedTime = localStorage.getItem(storageKey);
+  //   if (storedTime && videoRef.current) {
+  //     videoRef.current.currentTime = parseFloat(storedTime);
+  //   }
+  // }, [storageKey]);
+
+  const handleVideoTimeUpdate = () => {
+    if (videoRef.current) {
+      const currentTime = videoRef.current.currentTime;
+      localStorage.setItem(storageKey, currentTime);
+    }
+  };
+
   const handleQuality = (e) => {
     let target = e.target;
     if (videoSrc.length > 0) {
+      setcrrLoaded(false);
       switch (target.name) {
         case "360p": {
           ////console.log("360p");
@@ -373,6 +396,61 @@ const Video = () => {
       }
     }
   }
+  const [toggle, settoggle] = useState(false);
+  useEffect(() => {
+    const toggleBtn = document.querySelector(".toggle");
+    const qBtns = document.querySelectorAll(".vidSrc");
+  
+    if (toggleBtn.classList.contains('active')) {
+      qBtns.forEach(btn => {
+        btn.style.display = "block";
+      });
+    }else{
+        qBtns.forEach(btn => {
+            btn.style.display = btn.classList.contains('active') ? "block" : "none";
+        });
+
+    }
+  }, [toggle]);
+
+  function handlePrev(){
+    if(episodeNum!==null && episodeNum > 1){
+        let currentEpNumb= Number(episodeNum);
+        let prevEpisodeNum = currentEpNumb-1;
+        console.log(prevEpisodeNum);
+
+        let prevEpisodeID = episodeID.replace(currentEpNumb, prevEpisodeNum);
+        console.log(prevEpisodeID);
+
+        let prevAnimeTitle = values.Animetitle;
+        // let prevIsDub = isDub;
+
+        // navigateToPlay(ep.id, ep.number, encodeURIComponent(values.Animetitle), values.AnimeID)
+        navigateToPlay("/"+prevEpisodeID,prevEpisodeNum,encodeURIComponent(prevAnimeTitle),values.AnimeID);
+    }else{
+        console.log("cant be less than 1");
+    }
+}
+
+function handleNext(){
+    if(episodeNum > 0 && episodeNum < allEpisodes.length){
+        let currentEpNumb= Number(episodeNum);
+        let nextEpisodeNum = currentEpNumb+1;
+        console.log(nextEpisodeNum);
+
+        let nextEpisodeID = episodeID.replace(currentEpNumb, nextEpisodeNum);
+        console.log(nextEpisodeID);
+
+        let nextAnimeTitle = animeTitle;
+        // let nextIsDub = isDub;
+
+        navigateToPlay("/"+nextEpisodeID,nextEpisodeNum,encodeURIComponent(nextAnimeTitle),values.AnimeID);
+        // navigateToPlay(nextEpisodeID,nextEpisodeNum,nextAnimeTitle,nextIsDub);
+    }else{
+        console.log("cant be more than" + allEpisodes.length);
+    }
+}
+
   return (
     <div className='video-container'>
       {
@@ -401,24 +479,42 @@ const Video = () => {
                   <video ref={videoRef} 
                   className='video-js vjs-big-play-centered vjs-theme-fantasy'
                   // controls
+                  onTimeUpdate={handleVideoTimeUpdate}
                   ></video>
                 </div>
                 <div className="video-qualities">
+
                   {
                     videoSrc && videoSrc.length > 0 ? (
                       videoSrc.map(src => (
                         <button className={`vidSrc ${currentVideo.quality === src.quality ? 'active' : ''}`} type="button" name={src.quality} onClick={handleQuality} key={src.quality}>{src.quality}</button>
-                      ))
-                    ) : ("")
+                        ))
+                        ) : ("")
                   }
+                  <button type="button" className='toggle'
+                  onClick={(e)=>{
+                    e.currentTarget.classList.toggle('active');
+                    toggle===true ? settoggle(false): settoggle(true);
+                    }}
+                  ><i className='fa-solid fa-angles-left'></i>Quality</button>
+
                 </div>
                 <div className="video-home">
-                  <Link to={`/`} >
+                  {/* <Link to={`/`} >
+                    <i className='fa-solid fa-home'></i>
+                  </Link> */}
+                    {episodeNum >1?(
+                        <button type="button" className='btn btn-prev' onClick={handlePrev} >Prev</button>
+                    ):""}
+                  <Link to={`/anime-details/${values.AnimeID}`} >
                     <i className='fa-solid fa-home'></i>
                   </Link>
-                  <Link to={`/anime-details/${values.AnimeID}`} >
-                    <i className='fa-solid fa-bars'></i>
-                  </Link>
+                  {
+                        episodeNum < allEpisodes.length?(
+                            <button type="button" className='btn btn-next' onClick={handleNext} >Next</button>
+                        ):""
+                    }
+
                   </div>
               </div>
           )

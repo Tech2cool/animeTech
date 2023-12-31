@@ -1,5 +1,5 @@
 import {BrowserRouter, Routes, Route} from 'react-router-dom';
-import {Home, Search, Loading,Popular ,Video, AnimeDetails, Navbar, NavbarBottom} from "./components";
+import {Home, Search,Popular ,Video, AnimeDetails, Navbar, NavbarBottom} from "./components";
 
 import './App.css';
 
