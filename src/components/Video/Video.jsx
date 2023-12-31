@@ -522,7 +522,7 @@ function handleNext(){
                   {
                         episodeNum < allEpisodes.length?(
                             <button type="button" className='btn btn-next' onClick={handleNext} >Next</button>
-                        ):""
+                        ):"Loading..."
                     }
 
                   </div>
