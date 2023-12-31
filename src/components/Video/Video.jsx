@@ -501,13 +501,13 @@ function handleNext(){
                         ))
                         ) : ("")
                   }
-                  <button type="button" className='toggle'
-                  onClick={(e)=>{
-                    e.currentTarget.classList.toggle('active');
-                    toggle===true ? settoggle(false): settoggle(true);
-                    }}
-                  ><i className='fa-solid fa-angles-left'></i>Quality</button>
-
+                  <button
+  type="button"
+  className={`toggle ${toggle ? "active" : ""}`}
+  onClick={() => setToggle(!toggle)}
+>
+  <i className='fa-solid fa-angles-left'></i>Quality
+</button>
                 </div>
                 <div className="video-home">
                   {/* <Link to={`/`} >
