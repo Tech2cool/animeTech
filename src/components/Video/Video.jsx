@@ -504,7 +504,7 @@ function handleNext(){
                   <button
   type="button"
   className={`toggle ${toggle ? "active" : ""}`}
-  onClick={() => setToggle(!toggle)}
+  onClick={() => settoggle(!toggle)}
 >
   <i className='fa-solid fa-angles-left'></i>Quality
 </button>
