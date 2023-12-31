@@ -540,7 +540,7 @@ function handleNext(){
                   <div className={`video-episode ${values.EpisodeNumber === ep.number ? 'active' : ''}`}
                     key={ep.number}
                     onClick={() => {
-                      navigateToPlay(ep.id, ep.number, encodeURIComponent(animeTitleNative), values.AnimeID)
+                      navigateToPlay(ep.id, ep.number, encodeURIComponent(animeTitle), values.AnimeID)
                     }}
                   >
                     {/* <p>episode title</p> */}
