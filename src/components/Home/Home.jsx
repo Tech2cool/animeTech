@@ -20,7 +20,7 @@ const Home = () => {
     try {
       const result = await axios.get(`https://gogo-server.vercel.app/recent?page=${pageNum}&perPage=${perPage}`);
 
-      console.log({result:"result 1"},result.data);
+      // console.log({result:"result 1"},result.data);
       setAnime(result.data.list);
       setTotalPage(result.data.totalPages);
     } catch (error) {
