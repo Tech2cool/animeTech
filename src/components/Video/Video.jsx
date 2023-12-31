@@ -1,24 +1,30 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useParams, useNavigate,Link,useLocation } from 'react-router-dom';
+import { useParams, useNavigate,Link } from 'react-router-dom';
 import axios from 'axios';
 import Hls from 'hls.js';
 import Loading from '../Loading/Loading';
 import videojs from 'video.js'
+
 import 'videojs-mobile-ui/dist/videojs-mobile-ui.css';
 import 'videojs-mobile-ui';
 import "./Video.css";
 import "videojs-hotkeys";
 import "videojs-seek-buttons";
+import { useLanguage } from '../../context/langContext';
+
+import fakeImg from "../../images/NoImg.png";
+
 const Video = () => {
   const navigate = useNavigate();
+  const { currentLang } = useLanguage();
 
   const { episodeID, episodeNum, animeTitle } = useParams();
   // ////console.log(animeID)
-  let { state } = useLocation();
+  // let { state } = useLocation();
 
   // Destructure the state object
-  const { animeTitleNative } = state || "nostate"; // Use default value to handle cases where state is undefined
-  ////console.log(animeTitleNative)
+  // const { animeTitleNative } = state || "nostate"; // Use default value to handle cases where state is undefined
+  // console.log({animeTitleNative})
   
   const navigateToPlay = (episodeId, episodeNum, animeTitle, animeId) => {
     const url = `/video${episodeId}/${episodeNum}/${animeTitle}/${animeId}`;
@@ -39,7 +45,11 @@ const Video = () => {
   });
   const [oldVideoURL, setoldVideoURL] = useState("");
   const [values, setValues] = useState({
-    Animetitle: "",
+    Animetitle: {
+      english:"",
+      english_jp:"",
+      japanese:""
+    },
     AnimeID: "",
     imgURL: "",
     EpisodeNumber: "",
@@ -53,43 +63,37 @@ const Video = () => {
   const fetchSrc = async () => {
     isRequestPending = true;
     try {
+      setisLoading(true);
       const result = await axios.get(`https://gogo-server.vercel.app/source?episodeID=/${encodeURIComponent(episodeID)}` )
       ////console.log({ result_data_1: "result.data 1" }, result.data);
 
       setvideoSrc(result.data.sources);
       // ////console.log("result 1 done")
       const result2 = await axios.get(`https://gogo-server.vercel.app/search?title=${encodeURIComponent(animeTitle)}` );
-      
-      if (result2.data.list.length > 0) {
-        //console.log({ result_data_2: "result.data 2" }, result2.data);
+      const res= result2.data.list[0];
+      // if (result2.data.list.length > 0) {
+        // console.log({ result_data_2: "result.data 2" }, result2.data);
         setValues(value => ({
           ...value,
-          Animetitle: animeTitle,
-          AnimeID: result2.data.list[0].animeID &&result2.data.list[0].animeID?result2.data.list[0].animeID:"",
-          imgURL: result2.data.list[0].img&& result2.data.list[0].img?result2.data.list[0].img:"",
+          Animetitle: {
+            english: (res.animeTitle && (res.animeTitle.english ? res.animeTitle.english : null)),
+            english_jp: (res.animeTitle && (res.animeTitle.english_jp ? res.animeTitle.english_jp : null)),
+            japanese: (res.animeTitle && (res.animeTitle.japanese ? res.animeTitle.japanese : null)),
+          },
+          AnimeID: res.animeID &&res.animeID?res.animeID:"",
+          imgURL: res.animeImg&& res.animeImg?res.animeImg:"",
           EpisodeNumber: Number(episodeNum),
           // EpisodeTitle: result.data.animeTitle
         }));
-  
-      }
-      else{
-        const result22 = await axios.get(`https://gogo-server.vercel.app/search?title=${animeTitleNative&& animeTitleNative !== ""?animeTitleNative:animeTitle}` );
-        //console.log({ result_data_22: "result.data 22" }, result22.data);
-        setValues(value => ({
-          ...value,
-          Animetitle: animeTitle,
-          AnimeID: result22.data.list[0].animeID &&result22.data.list[0].animeID?result22.data.list[0].animeID:"",
-          imgURL:result22.data.list[0].img&& result22.data.list[0].img?result22.data.list[0].img:"",
-          EpisodeNumber: Number(episodeNum),
-          // EpisodeTitle: result.data.animeTitle
-        }));
-      }
+        setisLoading(false);
     } catch (error) {
       console.error(error) 
+      setisLoading(false);
     }
     // setisLoading(false);
     finally{
       isRequestPending=false;
+      setisLoading(false);
     }
   }
 
@@ -98,9 +102,9 @@ const Video = () => {
 
     // ////console.log("FetchAllEpisodes start")
     try {
-      const result3 = await axios.get(`https://gogo-server.vercel.app/episodes?animeID=${encodeURIComponent(animID)}` )
+      const result3 = await axios.get(`https://gogo-server.vercel.app/episodes?animeID=${encodeURIComponent(values.AnimeID)}` )
       setallEpisodes(result3.data);
-      console.log(result3.data)
+      // console.log(result3.data)
       
     } catch (error) {
       console.error('Error:', error);
@@ -116,7 +120,7 @@ const Video = () => {
     // }
   }
   const videoRef = useRef(null);
-  const hlsRef = useRef(null);
+  // const hlsRef = useRef(null);
   const storageKey = `videoPlaybackTime_${episodeID}`;
 
   const handleScrollWindow = () => {
@@ -154,13 +158,12 @@ const Video = () => {
     if (!isRequestPending) {
       // console.log('Request already pending. Ignoring duplicate request.');
       fetchSrc();
-      setisLoading(true);
       handleResize();
       // Add a resize event listener to handle changes
     window.addEventListener('resize', handleResize);
     
     // Clean up the resize event listener when the component unmounts
-    console.log({epid:"useEffect"})
+    // console.log({epid:"useEffect"})
     return () => {
       window.removeEventListener('resize', handleResize);
     };
@@ -174,7 +177,7 @@ const Video = () => {
     if (values.AnimeID !== "") {
       if (!isRequestPending) {
         fetchAllEpisode(values.AnimeID);
-        console.log({valuesAnimeID:"values.AnimeID"})
+        // console.log({valuesAnimeID:"values.AnimeID"})
       }
     }
 
@@ -193,7 +196,7 @@ const Video = () => {
         setoldVideoURL(defaultURL.url);
         setisLoading(false);
         setcrrLoaded(false);
-        console.log({ idk: "video srcc" }, { videoSrc });
+        // console.log({ idk: "video srcc" }, { videoSrc });
       }
     }
   }, [videoSrc])
@@ -203,7 +206,7 @@ const Video = () => {
   // },[currentVideo])
   const initializeVideoJS = () => {
     // Check if Video.js is already initialized on the video element
-    // if (!videojs.getPlayers()[videoRef.current.id]) {
+    if (!videojs.getPlayers()[videoRef.current.id]) {
 
       const videoPlayer = videojs(videoRef.current, {
         controls: true,
@@ -251,7 +254,7 @@ const Video = () => {
         enableModifiersForNumbers: false
       });
     
-    // }
+    }
 
   };
 
@@ -274,7 +277,7 @@ const Video = () => {
           } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
             video.src = videoSrc[0].url;
           }
-          console.log("if"+{crrr:currentVideo.src},{oldVideoURL})
+          // console.log("if"+{crrr:currentVideo.src},{oldVideoURL})
           const storedTime = localStorage.getItem(storageKey);
           if (storedTime && video) {
             video.currentTime = parseFloat(storedTime);
@@ -427,9 +430,10 @@ const Video = () => {
 
         // navigateToPlay(ep.id, ep.number, encodeURIComponent(values.Animetitle), values.AnimeID)
         navigateToPlay("/"+prevEpisodeID,prevEpisodeNum,encodeURIComponent(prevAnimeTitle),values.AnimeID);
-    }else{
-        console.log("cant be less than 1");
     }
+    // else{
+    //     console.log("cant be less than 1");
+    // }
 }
 
 function handleNext(){
@@ -441,14 +445,15 @@ function handleNext(){
         let nextEpisodeID = episodeID.replace(currentEpNumb, nextEpisodeNum);
         console.log(nextEpisodeID);
 
-        let nextAnimeTitle = animeTitle;
+        let nextAnimeTitle = values.Animetitle;
         // let nextIsDub = isDub;
 
         navigateToPlay("/"+nextEpisodeID,nextEpisodeNum,encodeURIComponent(nextAnimeTitle),values.AnimeID);
         // navigateToPlay(nextEpisodeID,nextEpisodeNum,nextAnimeTitle,nextIsDub);
-    }else{
-        console.log("cant be more than" + allEpisodes.length);
     }
+    // else{
+    //     console.log("cant be more than" + allEpisodes.length);
+    // }
 }
 
   return (
@@ -462,11 +467,16 @@ function handleNext(){
 
                 <div className="video-title">
                   <div className="video-poster">
-                    <img src={values.imgURL && values.imgURL} alt={values.Animetitle && values.Animetitle} />
+                    <img src={values.imgURL && values.imgURL?values.imgURL:fakeImg} alt={values.Animetitle && values.Animetitle} />
                   </div>
 
                   <div className="video-info">
-                    <p id='viat'>{values.Animetitle && values.Animetitle.toLowerCase()}</p>
+                    <p id='viat'>{
+                      currentLang === "en"?(
+                        (values.Animetitle && (values.Animetitle.english && values.Animetitle.english))
+                      ):(
+                        values.Animetitle && (values.Animetitle.english_jp && values.Animetitle.english_jp))
+                    }</p>
                     <div className="video-ep-num">
                       <p>Episode <span>{values.EpisodeNumber && values.EpisodeNumber}</span></p>
                       <p id='epTitle'>{values.EpisodeTitle && values.EpisodeTitle.includes(values.EpisodeNumber) ? "" : values.EpisodeTitle}</p>
@@ -530,7 +540,7 @@ function handleNext(){
                   <div className={`video-episode ${values.EpisodeNumber === ep.number ? 'active' : ''}`}
                     key={ep.number}
                     onClick={() => {
-                      navigateToPlay(ep.id, ep.number, encodeURIComponent(values.Animetitle), values.AnimeID)
+                      navigateToPlay(ep.id, ep.number, encodeURIComponent(animeTitleNative), values.AnimeID)
                     }}
                   >
                     {/* <p>episode title</p> */}

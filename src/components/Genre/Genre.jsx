@@ -10,7 +10,7 @@ import './Genre.css';
 
 const Genre = () => {
     const { genre } = useParams();
-    console.log(genre)
+    // console.log(genre)
     const [anime, setAnime] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPage, setTotalPage] = useState(null);
@@ -20,7 +20,7 @@ const Genre = () => {
     const fetchData = async (titlte, page) => {
         try {
             setisLoading(true);
-            const result = await axios.get(`https://gogo-server.vercel.app/genre/${encodeURIComponent(titlte)}?page=${page}`)
+            const result = await axios.get(`http://localhost:8081/genre/${encodeURIComponent(titlte)}?page=${page}`)
             if (result.data) {
                 console.log({ result1_Data: "result1_Data" }, result.data);
                 setAnime(result.data.list);
@@ -28,7 +28,7 @@ const Genre = () => {
             }
             setisLoading(false)
         } catch (error) {
-            console.log(error);
+            // console.log(error);
             setisLoading(false)
         }
     }
@@ -56,7 +56,7 @@ const Genre = () => {
         if (e.target.name === "prev") {
             if (currentPage < 1) return;
 
-            console.log("prev");
+            // console.log("prev");
             // fetchData(currentPage-1);
             // navigate(`/${currentPage - 1}`)
             setCurrentPage(currentPage - 1);
@@ -68,7 +68,7 @@ const Genre = () => {
             // fetchData(currentPage+1);
             // navigate(`/${currentPage + 1}`)
             setCurrentPage(currentPage + 1);
-            console.log("next")
+            // console.log("next")
             // setisLoading(true);
         }
     }

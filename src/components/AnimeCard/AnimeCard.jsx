@@ -54,18 +54,26 @@ const AnimeCard = ({ anime }) => {
                 }
                 <div className="anime-year">
                     <p>{
-                    (anime.year && anime.year)|| 
-                    (anime.releasedDate && anime.releasedDate)|| 
+                    (anime.year && ((Number(anime.year) > (new Date().getFullYear())) ? ("Releasing: " +anime.year):"Released: " +anime.year))|| 
+                    (anime.releasedDate && ((Number(anime.releasedDate) > (new Date().getFullreleasedDate())) ? ("Releasing: " +anime.releasedDate):"Released: " +anime.releasedDate))|| 
                     (anime.AdditionalInfo.status && anime.AdditionalInfo.status === "unreleased" && "Upcoming")
                     }</p>
                 </div>
-                {
-                anime.AdditionalInfo.ageRatingGuide && anime.AdditionalInfo.ageRating && (
                     <div className="anime-desc">
-                        <p>{anime.AdditionalInfo.ageRatingGuide &&anime.AdditionalInfo.ageRating && (ageRate ?(ageRate+" -"+ anime.AdditionalInfo.ageRatingGuide): (anime.AdditionalInfo.ageRatingGuide))}</p>
+                        {
+                            anime.AdditionalInfo.status && (
+                                <p>Status: {
+                                    (anime.AdditionalInfo.status && anime.AdditionalInfo.status ==="current" && "ongoing")||
+                                    (anime.AdditionalInfo.status && anime.AdditionalInfo.status ==="unreleased" && "not released")||
+                                    (anime.AdditionalInfo.status && anime.AdditionalInfo.status)
+                                    }</p>
+                            )
+                        }
+                        {
+                        anime.AdditionalInfo.ageRatingGuide && anime.AdditionalInfo.ageRating && (
+                        <p>{anime.AdditionalInfo.ageRatingGuide &&anime.AdditionalInfo.ageRating && 
+                        (ageRate ?(ageRate+" -"+ anime.AdditionalInfo.ageRatingGuide): (anime.AdditionalInfo.ageRatingGuide))}</p>)}
                     </div>
-                )
-            }
             </div>
         </div>
     )

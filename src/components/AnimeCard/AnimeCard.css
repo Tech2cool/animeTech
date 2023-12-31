@@ -64,10 +64,14 @@
 .anime-desc{
     display: flex;
     flex: 1;
-    align-items: flex-end;
+    /* align-items: flex-end; */
+    justify-content: flex-end;
+    flex-direction: column;
+    gap: 5px;
 }
-.anime-desc >p{
+.anime-desc p{
     color: #ffffffbf;
+    text-transform: capitalize;
 }
 @media screen and (min-width:320px) and (max-width:480px){
     .Anime-card{
@@ -86,7 +90,7 @@
         
     }
     .anime-info{
-        padding: 6px 8px;
+        padding: 6px 12px;
     }
     .anime-poster img{
         width: 100%;

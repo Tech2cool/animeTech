@@ -4,9 +4,9 @@ import { Link } from "react-router-dom";
 import AnimeCard from '../AnimeCard/AnimeCard';
 import Loading from '../Loading/Loading';
 
-import "./Popular.css";
+import "./NewSeason.css";
 
-const Popular = () => {
+const NewSeason = () => {
   // const {page}= useParams();
 
   const [anime, setAnime] = useState([]);
@@ -17,7 +17,7 @@ const Popular = () => {
   const fetchPupular = async (page = 1) => {
     try {
       setisLoading(true);
-      const result = await axios.get(`https://gogo-server.vercel.app/popular?page=${page}`)
+      const result = await axios.get(`http://localhost:8081/new-season?page=${page}`)
 
       console.log({ msg: "popular" }, result.data);
       if (result.data.list && result.data.list.length > 0) {
@@ -58,13 +58,13 @@ const Popular = () => {
   }
 
   return (
-    <div className='popular-container'>
-      <h1>Popular Anime</h1>
+    <div className='newSeason-container'>
+      <h1>New Season</h1>
       {
         isLoading ? (
           <Loading LoadingType={"ScaleLoader"} color={"red"} />
         ) : (
-          <div className="popular-results">
+          <div className="newSeason-results">
             {
               anime && anime.length > 0 ? (
                 anime.map((anime, i) => (
@@ -80,7 +80,7 @@ const Popular = () => {
         )
       }
 
-      <div className="popular-navigation">
+      <div className="newSeason-navigation">
         <button type="button" name='prev' onClick={handleNavigation}>Prev</button>
         <div className="currentPage">
           <p>{currentPage}</p>
@@ -92,4 +92,4 @@ const Popular = () => {
   )
 }
 
-export default Popular
+export default NewSeason

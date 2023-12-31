@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { Home, Search, Popular, Video, AnimeDetails, Navbar, NavbarBottom, Genre } from "./components";
+import { Home, Search, Popular, Video, AnimeDetails, Navbar, NavbarBottom, Genre, NewSeason } from "./components";
 import { LanguageProvider } from './context/langContext';
 
 import './App.css';
@@ -15,7 +15,7 @@ function App() {
         <Route path='/video/:episodeID/:episodeNum/:animeTitle?/:animeID?' element={<Video />} />
         <Route path='/anime-details/:animeID' element={<AnimeDetails />} />
         <Route path='/popular/:page?' element={<Popular />} />
-        <Route path='/anime-list/:page?' element={<Popular />} />
+        <Route path='/new-season/:page?' element={<NewSeason />} />
         <Route path='/genre/:genre' element={<Genre />} />
       </Routes>
       <NavbarBottom />

@@ -81,10 +81,12 @@ const Home = () => {
                 <Link
                 key={i}
                 to={`/video/${anime.episodeId}/${anime.episodeNum}/${
-                  (anime.animeTitle&&encodeURIComponent(anime.animeTitle.english_jp&& anime.animeTitle.english_jp))||
-                  (anime.animeTitle&& encodeURIComponent(anime.animeTitle.english&& anime.animeTitle.english))}/${anime.animeID}`}
+                  (anime.animeTitle&&encodeURIComponent(anime.animeTitle.english_jp&& anime.animeTitle.english_jp))
+                  ||(anime.animeTitle&& encodeURIComponent(anime.animeTitle.japanese&& anime.animeTitle.japanese))
+                  ||(anime.animeTitle&& encodeURIComponent(anime.animeTitle.english&& anime.animeTitle.english))
+                }/${anime.animeID}`}
 
-                state={{animeTitleNative: anime.animeTitle.english_jp&& encodeURIComponent(anime.animeTitle.english_jp)}}
+                // state={{animeTitleNative:(anime.animeTitle&&encodeURIComponent(anime.animeTitle.english_jp&& anime.animeTitle.english_jp))}}
                 >
                 <AnimeCard anime={anime}/>
                 </Link>
