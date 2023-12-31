@@ -70,8 +70,9 @@ const AnimeDetails = () => {
                           animeDetail.genres.map(genre => (
                               <Link
                               to={`/genre/${genre}`}
+                              key={genre}
                               >
-                            <div className="anim-genre" key={genre}>
+                            <div className="anim-genre" >
                               <i className='fa-solid fa-tags'></i>
                               <p id='anim-genre'>{genre}</p>
                             </div>

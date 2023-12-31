@@ -196,10 +196,17 @@
     display: none;
     cursor: pointer;
 }
+#anime-otherName{
+    white-space: wrap;
+    align-self: flex-start;
+}
 @media screen and (min-width:1200px) {
     .anime-details-container{
         padding: 10px 5%;
         width: 100%;
+    }
+    .anime-summary{
+        align-items: flex-start;
     }
 }
 
