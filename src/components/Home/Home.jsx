@@ -47,7 +47,7 @@ const Home = () => {
 
   const handleNavigation= (e)=>{
     if(e.target.name === "prev"){
-      if(currentPage < 1) return;
+      if(currentPage <= 1) return;
 
         //console.log("prev");
         // fetchLatest(currentPage-1);
@@ -56,7 +56,7 @@ const Home = () => {
         // setisLoading(true);
     }
     if(e.target.name === "next"){
-      if(currentPage < 1 || currentPage > totalPage) 
+      if(currentPage < 1 || currentPage >= totalPage) 
       return;
       // fetchLatest(currentPage+1);
       navigate(`/${currentPage + 1}`)
@@ -98,11 +98,20 @@ const Home = () => {
       }
 
       <div className="home-navigation">
-        <button type="button" name='prev'onClick={handleNavigation}>Prev</button>
-        <div className="currentPage">
-          <p>{currentPage}</p>
-        </div>
-        <button type="button" name='next'onClick={handleNavigation}>Next</button>
+        {
+              currentPage > 1 &&(
+                <button type="button" name='prev' onClick={handleNavigation}>Prev</button>
+              )
+            }
+          <div className="currentPage">
+            <p>{currentPage}</p>
+          </div>
+          { 
+            currentPage < totalPage &&(
+              <button type="button" name='next' onClick={handleNavigation}>Next</button>
+            )
+          }
+      
       </div>
     </div>
   )
