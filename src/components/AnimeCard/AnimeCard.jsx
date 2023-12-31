@@ -13,16 +13,19 @@ const AnimeCard = ({ anime }) => {
                     } 
                     alt=
                     {
-                        anime.animeTitle && anime.animeTitle?anime.animeTitle:(anime.title?anime.title:"")
+                        (anime.animeTitle && (anime.animeTitle.english && anime.animeTitle.english))||
+                        (anime.animeTitle && (anime.animeTitle.english_jp && anime.animeTitle.english_jp))||
+                        (anime.animeTitle && (anime.animeTitle.japanese && anime.animeTitle.japanese))||
+                        (anime.title?anime.title:"")
                     }/>
             </div>
             <div className="anime-info">
                 {
-                    anime.AdditionalInfo && anime.AdditionalInfo[0].averageRating !== null ? 
+                    anime.AdditionalInfo && anime.AdditionalInfo.averageRating !== null ? 
                     (
                         <div className="anime-rating">
                             <i className='fa-solid fa-star'></i>
-                            <p>{anime.AdditionalInfo[0].averageRating}</p>
+                            <p>{anime.AdditionalInfo.averageRating}</p>
                         </div>        
                     ):("")
                 }
@@ -30,8 +33,14 @@ const AnimeCard = ({ anime }) => {
                 <div className="anime-title">
                     <p>
                     {
-                        (anime.animeTitle && anime.animeTitle.length >0?((anime.animeTitle[0].english?anime.animeTitle[0].english: (anime.animeTitle[0].english_jp?anime.animeTitle[0].english_jp:anime.animeTitle[0].japanese))):anime.animeTitle)
-                        ||(anime.title?anime.title : anime.animeId)
+                        anime.animeTitle?(
+                            (anime.animeTitle.english && anime.animeTitle.english)||
+                            (anime.animeTitle.english_jp && anime.animeTitle.english_jp)||
+                            (anime.animeTitle.japanese && anime.animeTitle.japanese)
+                        ):(anime.animeTitle && anime.animeTitle)
+                        
+                        // (anime.animeTitle && anime.animeTitle.length >0?((anime.animeTitle[0].english?anime.animeTitle[0].english: (anime.animeTitle[0].english_jp?anime.animeTitle[0].english_jp:anime.animeTitle[0].japanese))):anime.animeTitle)
+                        // ||(anime.title?anime.title : anime.animeId)
                     }
                     </p>
                 </div>
@@ -51,7 +60,7 @@ const AnimeCard = ({ anime }) => {
             {
                 anime.description && (
                     <div className="anime-desc">
-                        <p>desc</p>
+                        <p>{anime.description && anime.description}</p>
                     </div>
                 )
             }

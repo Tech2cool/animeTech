@@ -18,9 +18,9 @@ const Home = () => {
 
   const fetchLatest= async(pageNum=1,perPage=12)=>{
     try {
-      const result = await axios.get(`https://gogo-server.vercel.app/recent?page=${pageNum}&perPage=${perPage}`);
+      const result = await axios.get(`http://localhost:8081/recent?page=${pageNum}&perPage=${perPage}`);
 
-      //console.log({result:"result 1"},result.data);
+      console.log({result:"result 1"},result.data);
       setAnime(result.data.list);
       setTotalPage(result.data.totalPages);
     } catch (error) {
@@ -79,11 +79,13 @@ const Home = () => {
             anime && anime.length >0?(
               anime.map((anime, i)=>(
                 <Link
+                key={i}
                 to={`/video/${anime.episodeId}/${anime.episodeNum}/${
-                  anime.animeTitle&& encodeURIComponent(anime.animeTitle[0].english&& anime.animeTitle[0].english?anime.animeTitle[0].english
-                    :anime.animeTitle[0].english_jp&& anime.animeTitle[0].english_jp)}/${anime.animeID}`}
-                state={{animeTitleNative: anime.animeTitle[0].english_jp&& encodeURIComponent(anime.animeTitle[0].english_jp)}}
-                key={i}>
+                  anime.animeTitle&& encodeURIComponent(anime.animeTitle.english&& anime.animeTitle.english)||
+                  encodeURIComponent(anime.animeTitle.english_jp&& anime.animeTitle.english_jp)}/${anime.animeID}`}
+
+                state={{animeTitleNative: anime.animeTitle.english_jp&& encodeURIComponent(anime.animeTitle.english_jp)}}
+                >
                 <AnimeCard anime={anime}/>
                 </Link>
               ))
