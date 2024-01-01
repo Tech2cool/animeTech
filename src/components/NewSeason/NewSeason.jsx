@@ -17,9 +17,9 @@ const NewSeason = () => {
   const fetchPupular = async (page = 1) => {
     try {
       setisLoading(true);
-      const result = await axios.get(`https://gogo-server.vercel.app/new-season?page=${page}`)
+      const result = await axios.get(`http://localhost:8081/new-season?page=${page}`)
 
-      console.log({ msg: "popular" }, result.data);
+      //console.log({ msg: "popular" }, result.data);
       if (result.data.list && result.data.list.length > 0) {
         setAnime(result.data.list);
         setTotalPage(result.data.totalPages);
@@ -40,7 +40,7 @@ const NewSeason = () => {
     if (e.currentTarget.name === "prev") {
       if(currentPage < 1) return;
 
-      console.log("prev");
+      //console.log("prev");
       fetchPupular(currentPage - 1);
       // navigate(`/${currentPage - 1}`)
       setCurrentPage(currentPage - 1);
@@ -52,7 +52,7 @@ const NewSeason = () => {
       fetchPupular(currentPage + 1);
       // navigate(`/${currentPage + 1}`)
       setCurrentPage(currentPage + 1);
-      console.log("next")
+      //console.log("next")
       // setisLoading(true);
     }
   }

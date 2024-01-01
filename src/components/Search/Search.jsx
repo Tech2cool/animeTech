@@ -19,9 +19,9 @@ const Search = () => {
   const fetchData = async(titlte,page)=>{
     try {
       setisLoading(true);
-      const result = await axios.get(`https://gogo-server.vercel.app/search?title=${encodeURIComponent(titlte)}&page=${page}`)
+      const result = await axios.get(`http://localhost:8081/search?title=${encodeURIComponent(titlte)}&page=${page}`)
       if(result.data){
-        console.log({result1_Data:"result1_Data"}, result.data);
+        //console.log({result1_Data:"result1_Data"}, result.data);
         setAnime(result.data.list);
         setTotalPage(result.data.totalPages);
       }
@@ -54,7 +54,7 @@ const Search = () => {
     if(e.target.name === "prev"){
       if(currentPage < 1) return;
 
-        console.log("prev");
+        //console.log("prev");
         // fetchData(currentPage-1);
         // navigate(`/${currentPage - 1}`)
         setCurrentPage(currentPage-1);
@@ -66,7 +66,7 @@ const Search = () => {
       // fetchData(currentPage+1);
       // navigate(`/${currentPage + 1}`)
       setCurrentPage(currentPage+1);
-      console.log("next")
+      //console.log("next")
       // setisLoading(true);
     }
   }
