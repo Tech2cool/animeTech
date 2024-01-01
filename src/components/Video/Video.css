@@ -340,12 +340,23 @@
         max-width: none;
     }
     #vid-epnum{
-        font-size: 14px;
+    font-size: 14px;
     }
     .vjs-control-bar{
         background-color: rgba(0, 0, 0, 0.56) !important;
         max-height: 45px;
-    }    
+    }  
+    #epTitle {
+        font-weight: 400;
+        font-size: 14px;
+    }
+    .video-ep-num{
+        align-items: flex-start; 
+        flex-direction: column;
+    }
+    .video-ep-num P:nth-child(2){
+        font-style: 14px;
+    }
 }
 @media screen and (max-width:320px) {
     .video-container{
@@ -365,4 +376,12 @@
         background-color: rgba(0, 0, 0, 0.56) !important;
         max-height: 45px;
     }    
+    .video-ep-num{
+        align-items: flex-start; 
+        flex-direction: column;
+    }
+    #epTitle {
+        font-weight: 400;
+        font-size: 14px;
+    }
 }
