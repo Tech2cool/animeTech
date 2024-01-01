@@ -18,9 +18,9 @@ const AnimeDetails = () => {
   const [ageRating, setageRating] = useState('');
   const { currentLang } = useLanguage();
 
-  // http://localhost:8081/anime-details?animeID=one-piece
+  // https://gogo-server.vercel.app/anime-details?animeID=one-piece
   const fetchAnimeDetails = async (animeId) => {
-    const result = await axios.get(`http://localhost:8081/anime-details?animeID=${animeId}`)
+    const result = await axios.get(`https://gogo-server.vercel.app/anime-details?animeID=${animeId}`)
     // console.log({ animeD: "anime details" }, result.data);
     setAnimeDetail(result.data);
     // if(result.data){
@@ -33,7 +33,7 @@ const AnimeDetails = () => {
     if(animeDetail && animeDetail.AdditionalInfo && animeDetail.AdditionalInfo.id){
       try {
         // console.log(animeDetail.AdditionalInfo.id)
-        const result3 = await axios.get(`http://localhost:8081/episodes?animeID=${animID}&kid=${(animeDetail && animeDetail.AdditionalInfo.id && animeDetail.AdditionalInfo.id)}`)
+        const result3 = await axios.get(`https://gogo-server.vercel.app/episodes?animeID=${animID}&kid=${(animeDetail && animeDetail.AdditionalInfo.id && animeDetail.AdditionalInfo.id)}`)
         setEpisodes(result3.data);
         // console.log({ep:result3.data})
         
