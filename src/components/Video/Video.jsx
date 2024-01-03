@@ -19,7 +19,7 @@ const Video = () => {
   const navigate = useNavigate();
   const { currentLang } = useLanguage();
 
-  const { episodeID, episodeNum, animeTitle } = useParams();
+  const { episodeID, episodeNum, animeTitle,animeID } = useParams();
 
   const navigateToPlay = (episodeId, episodeNum, animeTitle, animeId) => {
     const url = `/video/${episodeId}/${episodeNum}/${animeTitle}/${animeId}`;
@@ -55,25 +55,27 @@ const Video = () => {
 
   // ////console.log(useParams());
   let isRequestPending = false;
+  let timeoutOccurred = false;
 
   const fetchSrc = async () => {
     isRequestPending = true;
     try {
       setisLoading(true);
-      const result = await axios.get(`https://gogo-server.vercel.app/source?episodeID=/${encodeURIComponent(episodeID)}`)
+      const result = await axios.get(`https://gogo-server.vercel.app/source?episodeID=/${encodeURIComponent(episodeID)}`,{timeout: 5000})
       //console.log({ result_data_1: "result.data 1" }, result.data);
 
       setvideoSrc(result.data.sources);
       // ////console.log("result 1 done")
-      const result2 = await axios.get(`https://gogo-server.vercel.app/search?title=${encodeURIComponent(animeTitle.split("Part")[0])}`);
-      const res = result2.data.list[0];
-      // console.log({ result_data_2: "result.data 2" }, result2.data);
+      // console.log(animeTitle);
+      const result2 = await axios.get(`https://gogo-server.vercel.app/search?title=${encodeURIComponent(animeTitle.split("Part")[0])}`,{timeout: 5000});
       if (result2.data.list.length > 0) {
-        setValues(value => ({
-          ...value,
+        // console.log({ result_data_2: "result.data 2" }, result2.data);
+        const res = result2.data.list[0];
+          setValues(value => ({
+            ...value,
           Animetitle: {
             english: (res.animeTitle && (res.animeTitle.english && res.animeTitle.english ? res.animeTitle.english : null)),
-            english_jp: (res.animeTitle && (res.animeTitle.english_jp && res.animeTitle.english_jp ? res.animeTitle.english_jp : null)),
+            english_jp: (res.animeTitle && (res.animeTitle.english_jp && res.animeTitle.english_jp ? res.animeTitle.english_jp : animeTitle)),
             japanese: (res.animeTitle && (res.animeTitle.japanese && res.animeTitle.japanese ? res.animeTitle.japanese : null)),
           },
           AnimeID: res.animeID && res.animeID ? res.animeID : "",
@@ -82,6 +84,25 @@ const Video = () => {
           AdditonalInfo: res,
           // EpisodeTitle: result.data.animeTitle
         }));
+      }
+      else{
+        const result2 = await axios.get(`https://gogo-server.vercel.app/anime-details?animeID=${animeID}`,{timeout: 5000})
+        // console.log({ result_data_22: "result.data 2" }, result2.data);
+        const res = result2.data;
+        setValues(value => ({
+          ...value,
+        Animetitle: {
+          english: (res.Title && (res.Title.english && res.Title.english ? res.Title.english : null)),
+          english_jp: (res.Title && (res.Title.english_jp && res.Title.english_jp ? res.Title.english_jp : animeTitle)),
+          japanese: (res.Title && (res.Title.japanese && res.Title.japanese ? res.Title.japanese : null)),
+        },
+        AnimeID: res.animeID && res.animeID ? res.animeID : animeID,
+        imgURL: res.animeImage && res.animeImage ? res.animeImage : "",
+        EpisodeNumber: Number(episodeNum),
+        AdditonalInfo: res,
+        // EpisodeTitle: result.data.animeTitle
+      }));
+
       }
       setisLoading(false);
     } catch (error) {
@@ -101,13 +122,20 @@ const Video = () => {
     // ////console.log("FetchAllEpisodes start")
     try {
       //console.log(values.AdditonalInfo.AdditionalInfo.id)
-      const result3 = await axios.get(`https://gogo-server.vercel.app/episodes?animeID=${encodeURIComponent(values.AnimeID)}&kid=${values.AdditonalInfo.AdditionalInfo.id}`)
+      const result3 = await axios.get(`https://gogo-server.vercel.app/episodes?animeID=${encodeURIComponent(values.AnimeID)}&kid=${values.AdditonalInfo.AdditionalInfo.id}`,{timeout: 5000})
       setallEpisodes(result3.data);
-      console.log({ ep: result3.data })
+      // console.log({ ep: result3.data })
 
     } catch (error) {
-      console.error('Error:', error);
-    }
+      if (axios.isCancel(error)) {
+        console.log('Request canceled', error.message);
+      } else if (error.code === 'ECONNABORTED') {
+        console.log('Timeout occurred');
+        timeoutOccurred = true;
+      } else {
+        console.error('Error:', error.message);
+      }
+        }
     finally {
       isRequestPending = false;
     }
@@ -131,6 +159,7 @@ const Video = () => {
     };
 
   }, [allEpisodes])
+
   const handleScrollWindow = () => {
     const scrollThreshold = 300;
     setShowScrollIndicator(window.scrollY > scrollThreshold);
@@ -566,7 +595,7 @@ const Video = () => {
               </div>
 
             </>
-          ) : (<Loading LoadingType={"PuffLoader"} color={"red"} />)
+          ) : (timeoutOccurred?<p>Connection Timeout</p>:<Loading LoadingType={"PuffLoader"} color={"red"} />)
         }
       </div>
       <div className="tpBtns">

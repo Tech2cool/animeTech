@@ -17,15 +17,29 @@ const AnimeDetails = () => {
   const [epTitle, setepTitle] = useState(false);
   const [ageRating, setageRating] = useState('');
   const { currentLang } = useLanguage();
-
+  let timeoutOccurred = false;
   // https://gogo-server.vercel.app/anime-details?animeID=one-piece
   const fetchAnimeDetails = async (animeId) => {
-    const result = await axios.get(`https://gogo-server.vercel.app/anime-details?animeID=${animeId}`)
+    try {
+      
+    const result = await axios.get(`https://gogo-server.vercel.app/anime-details?animeID=${animeId}`,{timeout: 5000})
     // console.log({ animeD: "anime details" }, result.data);
     setAnimeDetail(result.data);
     // if(result.data){
     // }
     setisLoading(false);
+  } catch (error) {
+    if (axios.isCancel(error)) {
+      console.log('Request canceled', error.message);
+    } else if (error.code === 'ECONNABORTED') {
+      console.log('Timeout occurred');
+      timeoutOccurred = true;
+    } else {
+      console.error('Error:', error.message);
+    }
+
+  }
+
   }
 
   const fetchAllEpisode = async (animID) => {
@@ -33,13 +47,20 @@ const AnimeDetails = () => {
     if(animeDetail && animeDetail.AdditionalInfo && animeDetail.AdditionalInfo.id){
       try {
         // console.log(animeDetail.AdditionalInfo.id)
-        const result3 = await axios.get(`https://gogo-server.vercel.app/episodes?animeID=${animID}&kid=${(animeDetail && animeDetail.AdditionalInfo.id && animeDetail.AdditionalInfo.id)}`)
+        const result3 = await axios.get(`https://gogo-server.vercel.app/episodes?animeID=${animID}&kid=${(animeDetail && animeDetail.AdditionalInfo.id && animeDetail.AdditionalInfo.id)}`,{timeout: 5000})
         setEpisodes(result3.data);
         // console.log({ep:result3.data})
         
       } catch (error) {
-        console.error('Error:', error);
-      }
+        if (axios.isCancel(error)) {
+          console.log('Request canceled', error.message);
+        } else if (error.code === 'ECONNABORTED') {
+          console.log('Timeout occurred');
+          timeoutOccurred = true;
+        } else {
+          console.error('Error:', error.message);
+        }
+        }
     }
   }
 
@@ -181,7 +202,11 @@ const AnimeDetails = () => {
 
                   </div>
                   <div className="anime-summary">
-                    <p id='anime-otherName'>Other Names: <span>{animeDetail.otherName && animeDetail.otherName !== "" ? animeDetail.otherName : ""}</span></p>
+                    {
+                      animeDetail.otherName&&(
+                        <p id='anime-otherName'>Other Names: <span>{animeDetail.otherName && animeDetail.otherName !== "" ? animeDetail.otherName : ""}</span></p>
+                      )
+                    }
                     <button type="button" onClick={handleDescButton}>
                       {
                         descBtnActive ? "Hide Description" : "Show Description"
@@ -212,14 +237,22 @@ const AnimeDetails = () => {
                         <EpisodeCard episode={ep} from={"animeDetails"} />
                         </Link>
                       ))
-                    ) : (<Loading LoadingType={"PuffLoader"} color={"red"}/>)
+                    ) : (timeoutOccurred?(
+                    <p>Connection Timeout</p>):(
+                      animeDetail.totalEpisodes <=0 ? <p>No Episode Yet</p>:
+                      <Loading LoadingType={"PuffLoader"} color={"red"} />
+                    ))
                   }
                 </div>
               </div>
-              <div className="tpBtns">
+              {
+               animeDetail.totalEpisodes >0 &&(
+                <div className="tpBtns">
                 <button type="button" name='goTop' className={`goTop ${showScrollIndicator ? 'visible' : ''}`} onClick={handleNavTPB}><i className='fa-solid fa-angle-up'></i></button>
                 <button type="button" name='goDown' className={`goDown ${showScrollIndicator ? 'visible' : ''}`} onClick={handleNavTPB}><i className='fa-solid fa-angle-down'></i></button>
               </div>
+                )
+              }
             </>
           )
 
