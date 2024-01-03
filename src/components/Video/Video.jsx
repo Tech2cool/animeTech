@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 import Hls from 'hls.js';
+import { useLanguage } from '../../context/langContext';
 import Loading from '../Loading/Loading';
 import EpisodeCard from '../EpisodeCard/EpisodeCard';
 import videojs from 'video.js'
@@ -11,7 +12,6 @@ import 'videojs-mobile-ui';
 import "./Video.css";
 import "videojs-hotkeys";
 import "videojs-seek-buttons";
-import { useLanguage } from '../../context/langContext';
 
 import fakeImg from "../../images/NoImg.png";
 

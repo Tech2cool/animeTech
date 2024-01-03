@@ -1,12 +1,21 @@
-import Home from "./Home/Home";
-import AnimeDetails from "./AnimeDetails/AnimeDetails";
+// import Home from "./Home/Home";
+// import AnimeDetails from "./AnimeDetails/AnimeDetails";
 import Navbar from "./Navbar/Navbar";
-import Video from "./Video/Video";
+// import Video from "./Video/Video";
 import NavbarBottom from "./NavbarBottom/NavbarBottom";
 import Loading from './Loading/Loading';
-import Search from './Search/Search';
-import Popular from './Popular/Popular';
-import Genre from './Genre/Genre';
-import NewSeason from './NewSeason/NewSeason';
-
-export {Home, AnimeDetails, Navbar, NavbarBottom, Popular,Search, Video, Loading,Genre,NewSeason}
+// import Search from './Search/Search';
+// import Popular from './Popular/Popular';
+// import Genre from './Genre/Genre';
+// import NewSeason from './NewSeason/NewSeason';
+import { lazy } from "react";
+const Home = lazy(()=>import("./Home/Home"));
+const AnimeDetails = lazy(()=>import("./AnimeDetails/AnimeDetails"));
+const Video = lazy(()=>import("./Video/Video"));
+const Search = lazy(()=>import("./Search/Search"));
+const Popular = lazy(()=>import("./Popular/Popular"));
+const Genre = lazy(()=>import("./Genre/Genre"));
+const NewSeason = lazy(()=>import("./NewSeason/NewSeason"));
+const NotFound = lazy(()=>import("./NotFound/NotFound"));
+// const Home = lazy(()=>import("./Home/Home"));
+export {Home, AnimeDetails, Navbar, NavbarBottom, Popular,Search, Video, Loading,Genre,NewSeason,NotFound}

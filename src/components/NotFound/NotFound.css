@@ -1,0 +1,20 @@
+.notFound{
+    width: 100%;
+    height: 60vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+.notFound h1{
+    font-size: 40px;
+}
+.notFound p{
+    font-size: 20px;
+}
+.notFound a{
+    font-size: 30px;
+    color: rgb(0, 76, 255);
+    text-decoration: underline;
+}
