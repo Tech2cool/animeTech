@@ -19,7 +19,7 @@ const Video = () => {
   const navigate = useNavigate();
   const { currentLang } = useLanguage();
 
-  const { episodeID, episodeNum, animeTitle } = useParams();  
+  const { episodeID, episodeNum, animeTitle } = useParams();
 
   const navigateToPlay = (episodeId, episodeNum, animeTitle, animeId) => {
     const url = `/video/${episodeId}/${episodeNum}/${animeTitle}/${animeId}`;
@@ -69,20 +69,20 @@ const Video = () => {
       const res = result2.data.list[0];
       // console.log({ result_data_2: "result.data 2" }, result2.data);
       if (result2.data.list.length > 0) {
-      setValues(value => ({
-        ...value,
-        Animetitle: {
-          english: (res.animeTitle && (res.animeTitle.english && res.animeTitle.english ? res.animeTitle.english : null)),
-          english_jp: (res.animeTitle && (res.animeTitle.english_jp && res.animeTitle.english_jp ? res.animeTitle.english_jp : null)),
-          japanese: (res.animeTitle && (res.animeTitle.japanese && res.animeTitle.japanese ? res.animeTitle.japanese : null)),
-        },
-        AnimeID: res.animeID && res.animeID ? res.animeID : "",
-        imgURL: res.animeImg && res.animeImg ? res.animeImg : "",
-        EpisodeNumber: Number(episodeNum),
-        AdditonalInfo: res,
-        // EpisodeTitle: result.data.animeTitle
-      }));
-    }
+        setValues(value => ({
+          ...value,
+          Animetitle: {
+            english: (res.animeTitle && (res.animeTitle.english && res.animeTitle.english ? res.animeTitle.english : null)),
+            english_jp: (res.animeTitle && (res.animeTitle.english_jp && res.animeTitle.english_jp ? res.animeTitle.english_jp : null)),
+            japanese: (res.animeTitle && (res.animeTitle.japanese && res.animeTitle.japanese ? res.animeTitle.japanese : null)),
+          },
+          AnimeID: res.animeID && res.animeID ? res.animeID : "",
+          imgURL: res.animeImg && res.animeImg ? res.animeImg : "",
+          EpisodeNumber: Number(episodeNum),
+          AdditonalInfo: res,
+          // EpisodeTitle: result.data.animeTitle
+        }));
+      }
       setisLoading(false);
     } catch (error) {
       console.error(error)
@@ -103,7 +103,7 @@ const Video = () => {
       //console.log(values.AdditonalInfo.AdditionalInfo.id)
       const result3 = await axios.get(`https://gogo-server.vercel.app/episodes?animeID=${encodeURIComponent(values.AnimeID)}&kid=${values.AdditonalInfo.AdditionalInfo.id}`)
       setallEpisodes(result3.data);
-     // console.log({ ep: result3.data })
+      console.log({ ep: result3.data })
 
     } catch (error) {
       console.error('Error:', error);
@@ -118,9 +118,19 @@ const Video = () => {
     // ////console.log("FetchAllEpisodes done")
     // }
   }
-  useEffect(()=>{
-   // console.log({allEpisodes})
-  },[allEpisodes])
+  useEffect(() => {
+    // console.log({allEpisodes})
+    handleResize();
+    // Add a resize event listener to handle changes
+    window.addEventListener('resize', handleResize);
+
+    // Clean up the resize event listener when the component unmounts
+    // console.log({epid:"useEffect"})
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+
+  }, [allEpisodes])
   const handleScrollWindow = () => {
     const scrollThreshold = 300;
     setShowScrollIndicator(window.scrollY > scrollThreshold);
@@ -134,7 +144,7 @@ const Video = () => {
 
   const handleResize = () => {
     // console.log("resized called")
-    isMobile = window.innerWidth < 480;
+    isMobile = window.innerWidth < 1150;
 
     if (isMobile) {
       window.addEventListener('scroll', handleScrollWindow);
@@ -162,16 +172,6 @@ const Video = () => {
     if (!isRequestPending) {
       // console.log('Request already pending. Ignoring duplicate request.');
       fetchSrc();
-      handleResize();
-      // Add a resize event listener to handle changes
-      window.addEventListener('resize', handleResize);
-
-      // Clean up the resize event listener when the component unmounts
-      // console.log({epid:"useEffect"})
-      return () => {
-        window.removeEventListener('resize', handleResize);
-      };
-
     }
   }, [episodeID]);
 
@@ -424,10 +424,10 @@ const Video = () => {
     if (episodeNum !== null && episodeNum > 1) {
       let currentEpNumb = Number(episodeNum);
       let prevEpisodeNum = currentEpNumb - 1;
-     // console.log(prevEpisodeNum);
+      // console.log(prevEpisodeNum);
 
       let prevEpisodeID = episodeID.replace(currentEpNumb, prevEpisodeNum);
-     // console.log(prevEpisodeID);
+      // console.log(prevEpisodeID);
 
       let prevAnimeTitle = values.Animetitle.english_jp ? values.Animetitle.english_jp : values.Animetitle.english;
       // let prevIsDub = isDub;
@@ -485,12 +485,19 @@ const Video = () => {
                     <p>Episode <span>{values.EpisodeNumber && values.EpisodeNumber}</span></p>
                     <p id='epTitle'>
                       {
-                        allEpisodes && allEpisodes.length >0&&(
-                          (allEpisodes[Number(values.EpisodeNumber)-1].title && allEpisodes[Number(values.EpisodeNumber)-1].title.english && allEpisodes[Number(values.EpisodeNumber)-1].title.english)||
-                          (allEpisodes[Number(values.EpisodeNumber)-1].title && allEpisodes[Number(values.EpisodeNumber)-1].title.english_jp && allEpisodes[Number(values.EpisodeNumber)-1].title.english_jp)||
-                          (allEpisodes[Number(values.EpisodeNumber)-1].title && allEpisodes[Number(values.EpisodeNumber)-1].title.japanese && allEpisodes[Number(values.EpisodeNumber)-1].title.japanese)
-                          )
-                    }</p>
+                        allEpisodes &&
+                        allEpisodes.length > 0 &&
+                        allEpisodes[Number(values.EpisodeNumber) - 1] && (
+                          (allEpisodes[Number(values.EpisodeNumber) - 1].title ? (
+                            (allEpisodes[Number(values.EpisodeNumber) - 1].title.english &&
+                              allEpisodes[Number(values.EpisodeNumber) - 1].title.english) ||
+                            (allEpisodes[Number(values.EpisodeNumber) - 1].title.english_jp &&
+                              allEpisodes[Number(values.EpisodeNumber) - 1].title.english_jp) ||
+                            (allEpisodes[Number(values.EpisodeNumber) - 1].title.japanese &&
+                              allEpisodes[Number(values.EpisodeNumber) - 1].title.japanese) || null
+                          ) : null)
+                        )
+                      }</p>
                   </div>
                 </div>
               </div>
@@ -559,7 +566,7 @@ const Video = () => {
               </div>
 
             </>
-          ) : (<Loading LoadingType={"PuffLoader"} color={"red"}/>)
+          ) : (<Loading LoadingType={"PuffLoader"} color={"red"} />)
         }
       </div>
       <div className="tpBtns">
