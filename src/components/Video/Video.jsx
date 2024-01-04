@@ -7,7 +7,9 @@ import Loading from '../Loading/Loading';
 import EpisodeCard from '../EpisodeCard/EpisodeCard';
 import videojs from 'video.js'
 
+
 import 'videojs-mobile-ui/dist/videojs-mobile-ui.css';
+import '@videojs/themes/dist/fantasy/index.css';
 import 'videojs-mobile-ui';
 import "./Video.css";
 import "videojs-hotkeys";
@@ -147,6 +149,7 @@ const Video = () => {
     // ////console.log("FetchAllEpisodes done")
     // }
   }
+
   useEffect(() => {
     // console.log({allEpisodes})
     handleResize();
@@ -227,7 +230,7 @@ const Video = () => {
           src: defaultURL.url,
           quality: defaultURL.quality
         }));
-        setoldVideoURL(defaultURL.url);
+        
         setisLoading(false);
         setcrrLoaded(false);
         // console.log({ idk: "video srcc" }, { videoSrc });
@@ -255,16 +258,13 @@ const Video = () => {
         playbackRates: [0.25, 0.5, 1, 1.5, 2, 2.5, 3, 4],
         controlBar: {
           fullscreenToggle: true,
-          progressControl: true,
-          seekToLive: true,
-          // timeDivider: true, // Show the time divider (default is true)
-          // durationDisplay: true, // Show the duration display (default is true)
+          // progressControl: true,
+          // seekToLive: true,
+          timeDivider: false, // Show the time divider (default is true)
+          durationDisplay: true, // Show the duration display (default is true)
         },
       });
-      // videoPlayer.seekButtons({
-      //   forward: 10,
-      //   back: 10
-      // });
+
 
       videoPlayer.mobileUi({
         fullscreen: {
@@ -296,17 +296,19 @@ const Video = () => {
   //   initializeVideoJS();
   // },[])
 
-  const defaultOption = {};
   const hls = new Hls();
   useEffect(() => {
     const video = videoRef.current;
     // console.log({crrr:currentVideo.src},{oldVideoURL:oldVideoURL})
 
-    if (currentVideo.src !== "" || oldVideoURL !== "") {
+    if ((currentVideo.src !== "" || oldVideoURL !== "")) {
+      if(currentVideo.src !== oldVideoURL){
+
       if (!crrLoaded) {
         initializeVideoJS();
         if (Hls.isSupported()) {
           hls.loadSource(currentVideo.src);
+          setoldVideoURL(currentVideo.src);
           hls.on(Hls.Events.MANIFEST_PARSED, (event, data) => {
             // window.hls = hls
             const availableQualities = hls.levels.map((l) => l.height)
@@ -321,7 +323,11 @@ const Video = () => {
           hls.on(Hls.Events.LEVEL_SWITCHED, (evt, data) => {
             const level = hls.levels[data.level];
             if (level) {
-              // console.log(`qualityChange ${level.width}x${level.height}`);
+              setquality(d=>({
+                ...d,
+                default:level.height,
+              }))
+                // console.log(`qualityChange ${level.width}x${level.height}`);
             }
           });
 
@@ -340,7 +346,10 @@ const Video = () => {
         }
       }
     }
+
+    }
   }, [currentVideo]);
+
   const updateQuality = (newQuality) => {
     window.hls.levels.forEach((level, i) => {
       if (level.height === newQuality) {

@@ -230,6 +230,9 @@
     left: 55%;
     font-size: 25px;
 }
+.vjs-theme-fantasy .vjs-big-play-button{
+    /* color: white; */
+}
 .vjs-control-bar{
     background-color: rgba(0, 0, 0, 0.56) !important;
 }
@@ -238,13 +241,65 @@
     align-items: center;
     justify-content: center;
 }
-.video-js .vjs-current-time, .vjs-no-flex .vjs-current-time {
-    display: block;
+.vjs-theme-fantasy .vjs-play-control{
+    /* background-color: antiquewhite; */
+    padding: 0;
 }
-.video-js .vjs-time-control{
+.vjs-progress-control{
+    /* background-color: aqua; */
+    order: 1;
+}
+.vjs-theme-fantasy .vjs-picture-in-picture-control{
+    /* background-color: blue; */
+    order: 3;
+}
+.vjs-playback-rate{
+    /* background-color: aquamarine; */
+    order: 3;
+
+}
+.vjs-playback-rate button{
+    top: 12px;
+
+}
+.vjs-theme-fantasy .vjs-fullscreen-control{
+    order: 6;
+    /* background-color: bisque; */
+    /* font-size: 10px; */
+}
+.vjs-volume-panel{
+    /* background-color: red; */
+}
+.vjs-theme-fantasy .vjs-time-control{
+    display: none;
     padding: 0px;
     font-size: 12px;
 }
+.vjs-theme-fantasy .vjs-remaining-time{
+    display: none;
+}
+.vjs-theme-fantasy .vjs-remaining-time{
+    display: block;
+    order: 2;
+    /* background-color:aquamarine; */
+}
+.vjs-theme-fantasy .vjs-time-divider{
+    display: none;
+}
+.vjs-theme-fantasy .vjs-duration-display{
+    margin: 0;
+    padding: 0;
+    /* background-color: aquamarine; */
+    display: none;
+}
+.vjs-theme-fantasy .vjs-current-time-display{
+    /* background-color: bisque; */
+    display: none;
+}
+/* .vjs-theme-fantasy .vjs-current-time ,.vjs-theme-fantasy .vjs-time-control,.vjs-theme-fantasy .vjs-time-divider{
+    display: block;
+} */
+
 @media screen and (min-width:1200px) {
     .video{
         max-width: 1100px;
