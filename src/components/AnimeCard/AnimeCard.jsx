@@ -6,8 +6,8 @@ import "./AnimeCard.css";
 const AnimeCard = ({ anime }) => {
     const { currentLang } = useLanguage();
 
-    const rate = (anime.AdditionalInfo.ageRatingGuide && (anime.AdditionalInfo.ageRatingGuide.match(/\d+/g)?anime.AdditionalInfo.ageRatingGuide.match(/\d+/g):""));
-    const ageRate = (rate !==""?(anime.AdditionalInfo.ageRating && anime.AdditionalInfo.ageRating +"-"+rate) : "");
+    const rate = (anime?.AdditionalInfo && anime.AdditionalInfo.ageRatingGuide && (anime.AdditionalInfo.ageRatingGuide.match(/\d+/g)?anime.AdditionalInfo.ageRatingGuide.match(/\d+/g):""));
+    const ageRate = (rate !==""?(anime?.AdditionalInfo && anime.AdditionalInfo.ageRating && anime.AdditionalInfo.ageRating +"-"+rate) : "");
     return (
         <div className="Anime-card">
             <div className="anime-poster">
@@ -26,13 +26,13 @@ const AnimeCard = ({ anime }) => {
             </div>
             <div className="anime-info">
                 {
-                anime.AdditionalInfo && anime.AdditionalInfo.averageRating !== null ?
+                anime?.AdditionalInfo && anime.AdditionalInfo?.averageRating &&
                     (
                         <div className="anime-rating">
                             <i className='fa-solid fa-star'></i>
                             <p>{anime.AdditionalInfo.averageRating && anime.AdditionalInfo.averageRating}</p>
                         </div>
-                    ) : ("")
+                    )
                 }
 
                 <div className="anime-title">
@@ -56,12 +56,12 @@ const AnimeCard = ({ anime }) => {
                     <p>{
                     (anime.year && ((Number(anime.year) > (new Date().getFullYear())) ? ("Releasing: " +anime.year):"Released: " +anime.year))|| 
                     (anime.releasedDate && ((Number(anime.releasedDate) > (new Date().getFullreleasedDate())) ? ("Releasing: " +anime.releasedDate):"Released: " +anime.releasedDate))|| 
-                    (anime.AdditionalInfo.status && anime.AdditionalInfo.status === "unreleased" && "Upcoming")
+                    (anime.AdditionalInfo?.status && anime.AdditionalInfo.status === "unreleased" && "Upcoming")
                     }</p>
                 </div>
                     <div className="anime-desc">
                         {
-                            anime.AdditionalInfo.status && (
+                            anime.AdditionalInfo?.status && (
                                 <p>Status: {
                                     (anime.AdditionalInfo.status && anime.AdditionalInfo.status ==="current" && "ongoing")||
                                     (anime.AdditionalInfo.status && anime.AdditionalInfo.status ==="unreleased" && "not released")||
@@ -70,7 +70,7 @@ const AnimeCard = ({ anime }) => {
                             )
                         }
                         {
-                        anime.AdditionalInfo.ageRatingGuide && anime.AdditionalInfo.ageRating && (
+                        anime.AdditionalInfo?.ageRatingGuide && anime.AdditionalInfo?.ageRating && (
                         <p>{anime.AdditionalInfo.ageRatingGuide &&anime.AdditionalInfo.ageRating && 
                         (ageRate ?(ageRate+" -"+ anime.AdditionalInfo.ageRatingGuide): (anime.AdditionalInfo.ageRatingGuide))}</p>)}
                     </div>

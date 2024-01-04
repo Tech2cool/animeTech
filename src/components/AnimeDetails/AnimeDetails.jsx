@@ -18,39 +18,39 @@ const AnimeDetails = () => {
   const [ageRating, setageRating] = useState('');
   const { currentLang } = useLanguage();
   let timeoutOccurred = false;
-  // https://gogo-server.vercel.app/anime-details?animeID=one-piece
+  // http://localhost:8081/anime-details?animeID=one-piece
   const fetchAnimeDetails = async (animeId) => {
     try {
-      
-    const result = await axios.get(`https://gogo-server.vercel.app/anime-details?animeID=${animeId}`,{timeout: 5000})
-    // console.log({ animeD: "anime details" }, result.data);
-    setAnimeDetail(result.data);
-    // if(result.data){
-    // }
-    setisLoading(false);
-  } catch (error) {
-    if (axios.isCancel(error)) {
-      console.log('Request canceled', error.message);
-    } else if (error.code === 'ECONNABORTED') {
-      console.log('Timeout occurred');
-      timeoutOccurred = true;
-    } else {
-      console.error('Error:', error.message);
-    }
 
-  }
+      const result = await axios.get(`http://localhost:8081/anime-details?animeID=${animeId}`, { timeout: 5000 })
+      // console.log({ animeD: "anime details" }, result.data);
+      setAnimeDetail(result.data);
+      // if(result.data){
+      // }
+      setisLoading(false);
+    } catch (error) {
+      if (axios.isCancel(error)) {
+        console.log('Request canceled', error.message);
+      } else if (error.code === 'ECONNABORTED') {
+        console.log('Timeout occurred');
+        timeoutOccurred = true;
+      } else {
+        console.error('Error:', error.message);
+      }
+
+    }
 
   }
 
   const fetchAllEpisode = async (animID) => {
     // console.log("FetchAllEpisodes start")
-    if(animeDetail && animeDetail.AdditionalInfo && animeDetail.AdditionalInfo.id){
+    if (animeDetail && animeDetail.AdditionalInfo && animeDetail.AdditionalInfo.id) {
       try {
         // console.log(animeDetail.AdditionalInfo.id)
-        const result3 = await axios.get(`https://gogo-server.vercel.app/episodes?animeID=${animID}&kid=${(animeDetail && animeDetail.AdditionalInfo.id && animeDetail.AdditionalInfo.id)}`,{timeout: 5000})
+        const result3 = await axios.get(`http://localhost:8081/episodes?animeID=${animID}&kid=${(animeDetail && animeDetail.AdditionalInfo.id && animeDetail.AdditionalInfo.id)}`, { timeout: 5000 })
         setEpisodes(result3.data);
         // console.log({ep:result3.data})
-        
+
       } catch (error) {
         if (axios.isCancel(error)) {
           console.log('Request canceled', error.message);
@@ -60,7 +60,7 @@ const AnimeDetails = () => {
         } else {
           console.error('Error:', error.message);
         }
-        }
+      }
     }
   }
 
@@ -95,19 +95,19 @@ const AnimeDetails = () => {
 
   }, [animeDetail]);
 
-  useEffect(()=>{
-      if (episodes && episodes.length > 0) {
-        const filteredEpisodes = episodes.filter(ep => (
-          ep.title && (
-            ep.title.english !== null ||
-            ep.title.english_jp !== null ||
-            ep.title.japanese !== null
-          )
-        ));
+  useEffect(() => {
+    if (episodes && episodes.length > 0) {
+      const filteredEpisodes = episodes.filter(ep => (
+        ep.title && (
+          ep.title.english !== null ||
+          ep.title.english_jp !== null ||
+          ep.title.japanese !== null
+        )
+      ));
 
-        setepTitle(filteredEpisodes.length > 0 ? true : false);
-      }
-  },[episodes])
+      setepTitle(filteredEpisodes.length > 0 ? true : false);
+    }
+  }, [episodes])
 
   useEffect(() => {
     fetchAnimeDetails(animeID)
@@ -150,10 +150,10 @@ const AnimeDetails = () => {
                 <div className="anime-d-info">
                   <h1>{
                     currentLang === "en" ? (
-                      (animeDetail.Title && animeDetail.Title.english && animeDetail.Title.english)||
+                      (animeDetail.Title && animeDetail.Title.english && animeDetail.Title.english) ||
                       (animeDetail.Title && animeDetail.Title.english_jp && animeDetail.Title.english_jp)
                     ) : (
-                      (animeDetail.Title && animeDetail.Title.english_jp && animeDetail.Title.english_jp)||
+                      (animeDetail.Title && animeDetail.Title.english_jp && animeDetail.Title.english_jp) ||
                       (animeDetail.Title && animeDetail.Title.japanese && animeDetail.Title.japanese)
                     )
                   }</h1>
@@ -203,7 +203,7 @@ const AnimeDetails = () => {
                   </div>
                   <div className="anime-summary">
                     {
-                      animeDetail.otherName&&(
+                      animeDetail.otherName && (
                         <p id='anime-otherName'>Other Names: <span>{animeDetail.otherName && animeDetail.otherName !== "" ? animeDetail.otherName : ""}</span></p>
                       )
                     }
@@ -227,30 +227,29 @@ const AnimeDetails = () => {
                     episodes && episodes.length > 0 ? (
                       episodes.map(ep => (
                         <Link
-                          to={`/video/${ep.id}/${ep.number}/${
-                            (animeDetail.Title && animeDetail.Title.english_jp &&animeDetail.Title.english_jp)||
-                            (animeDetail.Title && animeDetail.Title.japanese &&animeDetail.Title.japanese)||
-                            (animeDetail.Title && animeDetail.Title.english &&animeDetail.Title.english)
-                          }/${animeID}`}
+                          to={`/video/${ep.id}/${ep.number}/${(animeDetail.Title && animeDetail.Title.english_jp && animeDetail.Title.english_jp) ||
+                            (animeDetail.Title && animeDetail.Title.japanese && animeDetail.Title.japanese) ||
+                            (animeDetail.Title && animeDetail.Title.english && animeDetail.Title.english)
+                            }/${animeID}`}
                           key={ep.number}
                         >
-                        <EpisodeCard episode={ep} from={"animeDetails"} />
+                          <EpisodeCard episode={ep} from={"animeDetails"} />
                         </Link>
                       ))
-                    ) : (timeoutOccurred?(
-                    <p>Connection Timeout</p>):(
-                      animeDetail.totalEpisodes <=0 ? <p>No Episode Yet</p>:
-                      <Loading LoadingType={"PuffLoader"} color={"red"} />
+                    ) : (timeoutOccurred ? (
+                      <p>Connection Timeout</p>) : (
+                      animeDetail.totalEpisodes <= 0 ? <p>No Episode Yet</p> :
+                        <Loading LoadingType={"PuffLoader"} color={"red"} />
                     ))
                   }
                 </div>
               </div>
               {
-               animeDetail.totalEpisodes >0 &&(
-                <div className="tpBtns">
-                <button type="button" name='goTop' className={`goTop ${showScrollIndicator ? 'visible' : ''}`} onClick={handleNavTPB}><i className='fa-solid fa-angle-up'></i></button>
-                <button type="button" name='goDown' className={`goDown ${showScrollIndicator ? 'visible' : ''}`} onClick={handleNavTPB}><i className='fa-solid fa-angle-down'></i></button>
-              </div>
+                animeDetail.totalEpisodes > 0 && (
+                  <div className="tpBtns">
+                    <button type="button" name='goTop' className={`goTop ${showScrollIndicator ? 'visible' : ''}`} onClick={handleNavTPB}><i className='fa-solid fa-angle-up'></i></button>
+                    <button type="button" name='goDown' className={`goDown ${showScrollIndicator ? 'visible' : ''}`} onClick={handleNavTPB}><i className='fa-solid fa-angle-down'></i></button>
+                  </div>
                 )
               }
             </>

@@ -14,62 +14,44 @@ const Genre = () => {
     const [anime, setAnime] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPage, setTotalPage] = useState(null);
-    const [title, settitle] = useState('');
+    // const [title, settitle] = useState(null);
     const [isLoading, setisLoading] = useState(false);
 
-    const fetchData = async (titlte, page) => {
+    const fetchData = async (Title, page = 1) => {
         try {
             setisLoading(true);
-            const result = await axios.get(`https://gogo-server.vercel.app/genre/${encodeURIComponent(titlte)}?page=${page}`)
-            if (result.data) {
-                //console.log({ result1_Data: "result1_Data" }, result.data);
-                setAnime(result.data.list);
-                setTotalPage(result.data.totalPages);
-            }
+
+            const result = await axios.get(`http://localhost:8081/genre/${encodeURIComponent(Title)}/${page}`);
+            //console.log({ result1_Data: "result1_Data" }, result.data);
+            setAnime(result.data.list);
+            setTotalPage(result.data.totalPages);
             setisLoading(false)
         } catch (error) {
-            // console.log(error);
+            console.log(error);
             setisLoading(false)
         }
     }
 
-    useEffect(()=>{
-      fetchData(genre,1)
-      settitle(genre);
-    },[genre])
     useEffect(() => {
-        setTimeout(() => {
-            fetchData(title, currentPage);
-        }, 200);
-        // window.scroll({behavior:"instant"})
-        // window.scroll(0,0)
+        if(genre || genre !== ""){
+            fetchData(genre, 1);
+            // settitle(genre);
+        }
+    }, [genre])
+    useEffect(() => {
+        fetchData(genre, currentPage);
     }, [currentPage])
-
-    useEffect(() => {
-        setTimeout(() => {
-            fetchData(title, 1);
-        }, 200);
-    }, [title])
-
 
     const handleNavigation = (e) => {
         if (e.target.name === "prev") {
             if (currentPage < 1) return;
 
-            // console.log("prev");
-            // fetchData(currentPage-1);
-            // navigate(`/${currentPage - 1}`)
             setCurrentPage(currentPage - 1);
-            // setisLoading(true);
         }
         if (e.target.name === "next") {
             if (currentPage < 1 || currentPage >= totalPage)
                 return;
-            // fetchData(currentPage+1);
-            // navigate(`/${currentPage + 1}`)
             setCurrentPage(currentPage + 1);
-            // console.log("next")
-            // setisLoading(true);
         }
     }
     return (

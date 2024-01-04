@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
-import Hls, { Events } from 'hls.js';
+import Hls from 'hls.js';
 import { useLanguage } from '../../context/langContext';
 import Loading from '../Loading/Loading';
 import EpisodeCard from '../EpisodeCard/EpisodeCard';
@@ -64,13 +64,13 @@ const Video = () => {
     isRequestPending = true;
     try {
       setisLoading(true);
-      const result = await axios.get(`https://gogo-server.vercel.app/source?episodeID=/${encodeURIComponent(episodeID)}`, { timeout: 5000 })
+      const result = await axios.get(`http://localhost:8081/source?episodeID=/${encodeURIComponent(episodeID)}`, { timeout: 5000 })
       //console.log({ result_data_1: "result.data 1" }, result.data);
 
       setvideoSrc(result.data.sources);
       // ////console.log("result 1 done")
       // console.log(animeTitle);
-      const result2 = await axios.get(`https://gogo-server.vercel.app/search?title=${encodeURIComponent(animeTitle.split("Part")[0])}`, { timeout: 5000 });
+      const result2 = await axios.get(`http://localhost:8081/search?title=${encodeURIComponent(animeTitle.split("Part")[0])}`, { timeout: 5000 });
       if (result2.data.list.length > 0) {
         // console.log({ result_data_2: "result.data 2" }, result2.data);
         const res = result2.data.list[0];
@@ -89,7 +89,7 @@ const Video = () => {
         }));
       }
       else {
-        const result2 = await axios.get(`https://gogo-server.vercel.app/anime-details?animeID=${animeID}`, { timeout: 5000 })
+        const result2 = await axios.get(`http://localhost:8081/anime-details?animeID=${animeID}`, { timeout: 5000 })
         // console.log({ result_data_22: "result.data 2" }, result2.data);
         const res = result2.data;
         setValues(value => ({
@@ -125,7 +125,7 @@ const Video = () => {
     // ////console.log("FetchAllEpisodes start")
     try {
       //console.log(values.AdditonalInfo.AdditionalInfo.id)
-      const result3 = await axios.get(`https://gogo-server.vercel.app/episodes?animeID=${encodeURIComponent(values.AnimeID)}&kid=${values.AdditonalInfo.AdditionalInfo.id}`, { timeout: 5000 })
+      const result3 = await axios.get(`http://localhost:8081/episodes?animeID=${encodeURIComponent(values.AnimeID)}&kid=${values.AdditonalInfo.AdditionalInfo.id}`, { timeout: 5000 })
       setallEpisodes(result3.data);
       // console.log({ ep: result3.data })
 
@@ -606,7 +606,7 @@ const Video = () => {
                     <>
                       {
                         quality.options?.map((src) => (
-                          <button className={`vidSrc ${quality.default === src ? 'active' : ''}`} type="button" name={src} onClick={handleQuality} key={src}>{src}</button>
+                          <button className={`vidSrc ${quality.default === src ? 'active' : ''}`} type="button" name={src} onClick={handleQuality} key={src}>{src}P</button>
                         ))
 
                       }
