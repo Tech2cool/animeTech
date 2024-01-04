@@ -18,7 +18,7 @@ const Home = () => {
 
   const fetchLatest= async(pageNum=1,perPage=12)=>{
     try {
-      const result = await axios.get(`https://gogo-server.vercel.app//recent?page=${pageNum}&perPage=${perPage}`);
+      const result = await axios.get(`https://gogo-server.vercel.app/recent?page=${pageNum}&perPage=${perPage}`);
 
       // console.log({result:"result 1"},result.data);
       setAnime(result.data.list);
