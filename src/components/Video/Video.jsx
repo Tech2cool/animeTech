@@ -462,7 +462,7 @@ const Video = () => {
       // let prevIsDub = isDub;
 
       // navigateToPlay(ep.id, ep.number, encodeURIComponent(values.Animetitle), values.AnimeID)
-      navigateToPlay("/" + prevEpisodeID, prevEpisodeNum, encodeURIComponent(prevAnimeTitle), values.AnimeID);
+      navigateToPlay(prevEpisodeID, prevEpisodeNum, encodeURIComponent(prevAnimeTitle), values.AnimeID);
     }
     // else{
     //     console.log("cant be less than 1");
@@ -481,7 +481,7 @@ const Video = () => {
       let nextAnimeTitle = values.Animetitle.english_jp ? values.Animetitle.english_jp : values.Animetitle.english;
       // let nextIsDub = isDub;
 
-      navigateToPlay("/" + nextEpisodeID, nextEpisodeNum, encodeURIComponent(nextAnimeTitle), values.AnimeID);
+      navigateToPlay(nextEpisodeID, nextEpisodeNum, encodeURIComponent(nextAnimeTitle), values.AnimeID);
       // navigateToPlay(nextEpisodeID,nextEpisodeNum,nextAnimeTitle,nextIsDub);
     }
     // else{
