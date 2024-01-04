@@ -17,7 +17,7 @@ const Popular = () => {
   const fetchPupular = async (page = 1) => {
     try {
       setisLoading(true);
-      const result = await axios.get(`http://localhost:8081/popular?page=${page}`)
+      const result = await axios.get(`https://gogo-server.vercel.app//popular?page=${page}`)
 
       //console.log({ msg: "popular" }, result.data);
       if (result.data.list && result.data.list.length > 0) {
