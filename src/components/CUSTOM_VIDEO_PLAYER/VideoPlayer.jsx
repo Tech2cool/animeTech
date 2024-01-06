@@ -96,26 +96,21 @@ const VideoPlayer = ({url}) => {
         if (playerContainerRef.current) {
           screenfull.request(playerContainerRef.current);
           // Check if screen.orientation.lock is supported before using it
-          if (screen.orientation && screen.orientation.lock) {
-            screen.orientation.lock('landscape').catch(error => {
-              console.error('Unable to lock screen orientation:', error);
-            });
-          }
+          screen.orientation?.lock('landscape')?.catch(error => {
+            console.error('Unable to lock screen orientation:', error);
+          });
         }
       } else {
         // Exiting fullscreen
         screenfull.exit();
         // Check if screen.orientation.unlock is supported before using it
-        if (screen.orientation && screen.orientation.unlock) {
-          screen.orientation.unlock();
-        }
+        screen.orientation?.unlock?.();
       }
   
       setVideoState({ ...videoState, isFullScreen: !videoState.isFullScreen });
     }
   };
   
-
   const rewindHandler = () => {
     //Rewinds the video player reducing 5
     playerRef.current.seekTo(playerRef.current.getCurrentTime() - 5);
