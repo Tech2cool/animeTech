@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState,useRef} from 'react';
 import axios from "axios";
 import { useParams, Link } from 'react-router-dom';
 import Loading from '../Loading/Loading';
@@ -17,7 +17,7 @@ const AnimeDetails = () => {
   const [epTitle, setepTitle] = useState(false);
   const [ageRating, setageRating] = useState('');
   const { currentLang } = useLanguage();
-  let timeoutOccurred = false;
+  let timeoutOccurred = useRef(false);
   // https://gogo-server.vercel.app/anime-details?animeID=one-piece
   const fetchAnimeDetails = async (animeId) => {
     try {
@@ -33,7 +33,7 @@ const AnimeDetails = () => {
         console.log('Request canceled', error.message);
       } else if (error.code === 'ECONNABORTED') {
         console.log('Timeout occurred');
-        timeoutOccurred = true;
+        timeoutOccurred.current = true;
       } else {
         console.error('Error:', error.message);
       }
@@ -49,15 +49,16 @@ const AnimeDetails = () => {
         // console.log(animeDetail.AdditionalInfo.id)
         const result3 = await axios.get(`https://gogo-server.vercel.app/episodes?animeID=${animID}&kid=${(animeDetail && animeDetail.AdditionalInfo.id && animeDetail.AdditionalInfo.id)}`, { timeout: 5000 })
         setEpisodes(result3.data);
-        // console.log({ep:result3.data})
+        console.log({ep:result3.data})
 
       } catch (error) {
         if (axios.isCancel(error)) {
           console.log('Request canceled', error.message);
         } else if (error.code === 'ECONNABORTED') {
           console.log('Timeout occurred');
-          timeoutOccurred = true;
+          timeoutOccurred.current = true;
         } else {
+          timeoutOccurred.current = true;
           console.error('Error:', error.message);
         }
       }
@@ -236,7 +237,7 @@ const AnimeDetails = () => {
                           <EpisodeCard episode={ep} from={"animeDetails"} />
                         </Link>
                       ))
-                    ) : (timeoutOccurred ? (
+                    ) : (timeoutOccurred.current ? (
                       <p>Connection Timeout</p>) : (
                       animeDetail.totalEpisodes <= 0 ? <p>No Episode Yet</p> :
                         <Loading LoadingType={"PuffLoader"} color={"red"} />
