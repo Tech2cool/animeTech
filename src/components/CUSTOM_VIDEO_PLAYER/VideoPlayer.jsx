@@ -48,7 +48,7 @@ const VideoPlayer = ({url}) => {
     const internalPlayer = playerRef.current?.getInternalPlayer('hls');
     if (internalPlayer) {
       setLevels(internalPlayer.levels);
-      console.log(internalPlayer.levels);
+      // console.log(internalPlayer.levels);
     }
   };
   const handleSetting = ()=>{
@@ -96,7 +96,7 @@ const VideoPlayer = ({url}) => {
         if (playerContainerRef.current) {
           screenfull.request(playerContainerRef.current);
           // Check if screen.orientation.lock is supported before using it
-          screen.orientation?.lock('landscape')?.catch(error => {
+          window?.screen?.orientation?.lock('landscape')?.catch(error => {
             console.error('Unable to lock screen orientation:', error);
           });
         }
@@ -104,7 +104,7 @@ const VideoPlayer = ({url}) => {
         // Exiting fullscreen
         screenfull.exit();
         // Check if screen.orientation.unlock is supported before using it
-        screen.orientation?.unlock?.();
+        window?.screen?.orientation?.unlock?.();
       }
   
       setVideoState({ ...videoState, isFullScreen: !videoState.isFullScreen });
