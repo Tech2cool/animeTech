@@ -59,7 +59,7 @@ const Video = () => {
     try {
       setisLoading(true);
       const result = await axios.get(`https://gogo-server.vercel.app/source?episodeID=/${encodeURIComponent(episodeID)}`, { timeout: 5000 })
-      console.log({ result_data_1: "result.data 1" }, result.data);
+     // console.log({ result_data_1: "result.data 1" }, result.data);
 
       setvideoSrc(result.data.sources);
       // ////console.log("result 1 done")

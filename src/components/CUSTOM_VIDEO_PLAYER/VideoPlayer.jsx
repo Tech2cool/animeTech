@@ -1,4 +1,4 @@
-import React, {useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import ReactPlayer from 'react-player';
 import Container from '@mui/material/Container';
 import screenfull from 'screenfull';
@@ -15,13 +15,16 @@ import { debounce } from 'lodash';
 const VideoPlayer = ({ url }) => {
   const playerRef = useRef(null);
   const playerContainerRef = useRef(null);
-  const controlRef = useRef(null);
+  // const controlRef = useRef(null);
   const [showQuality, setShowQuality] = useState(false);
   const [showPlaybackRate, setshowPlaybackRate] = useState(false);
   const [showSetting, setShowSetting] = useState(false);
   const [setting, setSetting] = useState(false);
+  const [showControlbar, setShowControlbar] = useState(false);
   const [levels, setLevels] = useState([]);
   const [currentQuality, setCurrentQuality] = useState(0);
+  const [seekTime, setSeekTime] = useState(0);
+  const [isFocused, setIsFocused] = useState(false);
   const playbackRates = [0.25, 0.50, 1.0, 1.50, 2.0, 2.50, 3.0]
   const [videoState, setVideoState] = useState({
     playing: false,
@@ -35,14 +38,25 @@ const VideoPlayer = ({ url }) => {
     pipMode: false,
     showTitle: false,
     title: null,
-    totalSeekTime: 0,
   });
-  const count = useRef(0);
-  const seekRate = 10;
+  const count = useRef(1);
+  // const newSeekTime = 10; // Fixed seek time
+  const key = {
+    escape: 27,
+    space: 32,
+    left: 37,
+    right: 39,
+    F: 70,
+    J: 74,
+    K: 75,
+    L: 76,
+    M: 77,
+  }
+
   const [vSlider, setVSlider] = useState(false);
   //Destructuring the properties from the videoState
   const { playing, muted, volume, playbackRate, played, seeking, buffer,
-    isFullScreen, pipMode, title, showTitle, totalSeekTime } = videoState;
+    isFullScreen, pipMode, title, showTitle } = videoState;
   const currentTime = playerRef.current ? playerRef.current.getCurrentTime() : "00:00";
   const duration = playerRef.current ? playerRef.current.getDuration() : "00:00";
 
@@ -57,7 +71,7 @@ const VideoPlayer = ({ url }) => {
       setLevels(internalPlayer.levels);
 
       const storedTime = localStorage.getItem(storageKey);
-      playerRef.current.seekTo(parseFloat(storedTime));  
+      playerRef.current.seekTo(parseFloat(storedTime));
     }
     else {
       const player = playerRef.current?.getInternalPlayer();
@@ -69,47 +83,59 @@ const VideoPlayer = ({ url }) => {
 
     }
   };
+  const handleFocus = () => {
+    setIsFocused(true);
+  };
+
+  const handleBlur = () => {
+    setIsFocused(false);
+  };
+
   const progressHandler = (state) => {
-      if (count.current > 2) {
+    if (count.current > 2) {
 
-        setSetting(false);
-        setShowQuality(false);
-        setShowSetting(false);
-        setshowPlaybackRate(false);
-        setVSlider(false);
-        setVideoState({ ...videoState, showTitle: false })
-        setVideoState({ ...videoState, totalSeekTime: 0 })
-        controlRef.current.style.visibility = "hidden"; 
-      } else if (controlRef.current.style.visibility === "visible") {
-        count.current += 1;
+      setSetting(false);
+      setShowQuality(false);
+      setShowSetting(false);
+      setshowPlaybackRate(false);
+      setVSlider(false);
+      setVideoState({ ...videoState, showTitle: false })
+      if (!isFocused){
+        setShowControlbar(false);
+        count.current=1;
       }
+      // controlRef.current.style.visibility = "hidden";
 
-      if (!seeking) {
-        // setVideoState({ ...videoState, played: state.played });
-        // console.log(state)
-        setVideoState((prevVideoState) => ({
-          ...prevVideoState,
-          played: state.played,
-        }));
+    } else if (showControlbar) {
+      if (!isFocused) count.current++;
+    }
 
-        localStorage.setItem(storageKey, state.playedSeconds);
+    if (!seeking) {
+      // setVideoState({ ...videoState, played: state.played });
+      // console.log(state)
+      setVideoState((prevVideoState) => ({
+        ...prevVideoState,
+        played: state.played,
+      }));
+
+      localStorage.setItem(storageKey, state.playedSeconds);
+    }
+    const internalPlayer = playerRef.current?.getInternalPlayer('hls');
+
+    if (internalPlayer) {
+      const newLevel = internalPlayer.currentLevel;
+      const initialHeight = internalPlayer.levels[newLevel]?.height;
+
+      if (initialHeight !== currentQuality) {
+        // console.log('Level changed:', initialHeight);
+        setCurrentQuality(initialHeight);
       }
-      const internalPlayer = playerRef.current?.getInternalPlayer('hls');
-
-      if (internalPlayer) {
-        const newLevel = internalPlayer.currentLevel;
-        const initialHeight = internalPlayer.levels[newLevel]?.height;
-
-        if (initialHeight !== currentQuality) {
-          // console.log('Level changed:', initialHeight);
-          setCurrentQuality(initialHeight);
-        }
-      }
-      const player = playerRef.current?.getInternalPlayer();
-      if (player) {
-        player.videoHeight !== currentQuality && setCurrentQuality(player.videoHeight);
-        // console.log('Video resolution:', player.videoWidth, 'x', player.videoHeight);
-      }
+    }
+    const player = playerRef.current?.getInternalPlayer();
+    if (player) {
+      player.videoHeight !== currentQuality && setCurrentQuality(player.videoHeight);
+      // console.log('Video resolution:', player.videoWidth, 'x', player.videoHeight);
+    }
 
   };
 
@@ -164,34 +190,40 @@ const VideoPlayer = ({ url }) => {
         // Check if screen.orientation.unlock is supported before using it
         window?.screen?.orientation?.unlock?.();
       }
-
+      setIsFocused(false);
       setVideoState({ ...videoState, isFullScreen: !videoState.isFullScreen });
     }
   };
   const [showRewindSeekTime, setShowRewindSeekTime] = useState(false);
   const [showForwardSeekTime, setShowForwardSeekTime] = useState(false);
 
-  const rewindHandler = () => {
-    const newTime = playerRef.current.getCurrentTime() - seekRate;
-    playerRef.current.seekTo(newTime);
+  const handleRewind = (newSeekTime = 10) => {
+    if (playerRef.current.getCurrentTime() >= 10) {
+      playerRef.current.seekTo(parseInt(playerRef.current.getCurrentTime()) - newSeekTime, 'seconds');
+      // Update total seek time
+      setSeekTime(seekTime - newSeekTime);
 
-    setVideoState({ ...videoState, totalSeekTime: seekRate })
-    setShowRewindSeekTime(true);
-    setTimeout(() => {
-      setShowRewindSeekTime(false);
-    }, 3000);
+      // Show total seek time for 2 seconds
+      setShowRewindSeekTime(true);
+      setTimeout(() => {
+        setShowRewindSeekTime(false);
+        setSeekTime(0);
+      }, 3000);
+    }
   };
 
-  const handleFastFoward = () => {
-    const newTime = playerRef.current.getCurrentTime() + seekRate;
-    playerRef.current.seekTo(newTime);
+  const handleFastFoward = (newSeekTime = 10) => {
+    if (playerRef.current.getCurrentTime() <= playerRef.current.getDuration()) {
+      playerRef.current.seekTo(parseInt(playerRef.current.getCurrentTime()) + newSeekTime, 'seconds');
+      // Update total seek time
+      setSeekTime(seekTime + newSeekTime);
 
-    setVideoState({ ...videoState, totalSeekTime: seekRate })
-    setShowForwardSeekTime(true);
-    setTimeout(() => {
-      setShowForwardSeekTime(false);
-      setVideoState({ ...videoState, totalSeekTime: 0 })
-    }, 3000);
+      setShowForwardSeekTime(true);
+      setTimeout(() => {
+        setShowForwardSeekTime(false);
+        setSeekTime(0);
+      }, 3000);
+    }
   };
 
   const debouncedHandleMiddleScreenClick = useRef(
@@ -201,19 +233,14 @@ const VideoPlayer = ({ url }) => {
       showSetting && setShowSetting(false);
       showPlaybackRate && setshowPlaybackRate(false);
       vSlider && setVSlider(false);
-      controlRef.current.style.visibility = "hidden";
+      // controlRef.current.style.visibility = "hidden";
+      setShowControlbar(false);
     }, 300) // Adjust the debounce delay as needed (e.g., 300 milliseconds)
   ).current;
 
   const handleMiddleScreenClick = () => {
     debouncedHandleMiddleScreenClick();
   }
-
-  const seekHandler = (e, value) => {
-    // console.log("seek to " +value)
-    setVideoState({ ...videoState, played: parseFloat(value / 100) });
-    playerRef.current.seekTo(parseFloat(value / 100));
-  };
 
   const seekMouseUpHandler = (e, value) => {
     // console.log(value);
@@ -252,8 +279,9 @@ const VideoPlayer = ({ url }) => {
   };
 
   const mouseMoveHandler = () => {
-    controlRef.current.style.visibility = "visible";
-    count.current = 0;
+    // controlRef.current.style.visibility = "visible";
+    setShowControlbar(true);
+    count.current = 1;
     setVideoState({ ...videoState, showTitle: true })
   };
 
@@ -289,6 +317,50 @@ const VideoPlayer = ({ url }) => {
     setShowSetting(false);
   };
 
+  const handleKeyDown = (event) => {
+    // You can check for specific key codes or key values here
+    switch (event.keyCode) {
+      case key.space: {
+        event.preventDefault();
+        setVideoState({ ...videoState, playing: !videoState.playing })
+        break;
+      }
+      case key.K: {
+        // event.preventDefault();
+        setVideoState({ ...videoState, playing: !videoState.playing })
+        break;
+      }
+
+      case key.left: {
+        handleRewind(5);
+        break;
+      }
+      case key.right: {
+        handleFastFoward(5);
+        break;
+      }
+      case key.J: {
+        handleRewind(10);
+        break;
+      }
+      case key.L: {
+        handleFastFoward(10);
+        break;
+      }
+      case key.F: {
+        handleFullScreen();
+        break;
+      }
+      case key.M: {
+        muteHandler();
+        break;
+      }
+      default:
+        break;
+    }
+  };
+
+
   return (
     <div className={`video_container`}>
       {
@@ -305,6 +377,8 @@ const VideoPlayer = ({ url }) => {
           ref={playerContainerRef}
           className="player_wrapper"
           onMouseMove={mouseMoveHandler}
+          tabIndex={0} onKeyDown={handleKeyDown}
+          onFocus={handleFocus} onBlur={handleBlur}
         >
           <ReactPlayer
             controls={false}
@@ -329,15 +403,15 @@ const VideoPlayer = ({ url }) => {
           />
 
           <Control
-            controlRef={controlRef}
+            showControlbar={showControlbar}
             onPlayPause={playPauseHandler}
             playing={playing}
             showTitle={showTitle}
             title={title}
-            onRewind={rewindHandler}
+            onRewind={handleRewind}
             onForward={handleFastFoward}
             played={played}
-            onSeek={seekHandler}
+            // onSeek={seekHandler}
             onSeekMouseUp={seekMouseUpHandler}
             volume={volume}
             onVolumeChangeHandler={volumeChangeHandler}
@@ -357,9 +431,9 @@ const VideoPlayer = ({ url }) => {
             setting={setting}
             handleSetting={handleSetting}
             handleMiddleScreenClick={handleMiddleScreenClick}
-            totalSeekTime={totalSeekTime}
             showRewindSeekTime={showRewindSeekTime}
             showForwardSeekTime={showForwardSeekTime}
+            seekTime={seekTime}
           />
           <div className={`setting_wrapper${setting ? " active" : ""}`}>
             <div className={`quality_wrapper${showQuality ? " active" : ""}`}>

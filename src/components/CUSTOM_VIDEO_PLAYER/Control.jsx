@@ -12,25 +12,24 @@ const Control = (prop) => {
     const {
         onPlayPause, playing, onRewind, onForward, played, onSeek, onSeekMouseUp, onVolumeChangeHandler,
         onVolumeSeekUp, volume, mute, onMute, duration, currentTime, onMouseSeekDown, handlePip, pip,
-        controlRef, isFullScreen, handleFullScreen, vSlider, setVSlider, setting, handleSetting,
-        handleMiddleScreenClick, title, showTitle, totalSeekTime, 
-        showRewindSeekTime,showForwardSeekTime } = prop;
+        showControlbar, isFullScreen, handleFullScreen, vSlider, setVSlider, setting, handleSetting,
+        handleMiddleScreenClick, title, showTitle, showRewindSeekTime,showForwardSeekTime,seekTime } = prop;
     const handleVolumeSlide = () => {
         setVSlider(true);
     };
 
     return (
-        <div className={`control_Container`} ref={controlRef}>
+        <div className={`control_Container${showControlbar?" active":""}`}>
             <div className={`top_container${showTitle ? " active" : ""}`}>
                 <h2>{title}</h2>
             </div>
             <div className="mid_container">
                 <div className="rewind">
                 {showRewindSeekTime && (
-                    <p><FastRewind />-{totalSeekTime && totalSeekTime}</p>
-                )}
+                    <p><FastRewind />{seekTime && seekTime}</p>
+                )}  
                     <div className="icon_btn"
-                        onDoubleClick={onRewind}    
+                        onDoubleClick={()=>onRewind(10)}    
                         onClick={handleMiddleScreenClick}
                         id="rewind">
                         <FastRewind fontSize="inherit" />
@@ -49,10 +48,10 @@ const Control = (prop) => {
                 </div>
                 <div className="fastforward">
                     {showForwardSeekTime && (
-                        <p>{totalSeekTime && totalSeekTime} <FastForward /></p>
+                        <p>{seekTime && seekTime} <FastForward /></p>
                     )}
                     <div className="icon_btn"
-                        onDoubleClick={onForward}
+                        onDoubleClick={()=>onForward(10)}
                         onClick={handleMiddleScreenClick}
                         id="fastForward">
                         <FastForward fontSize="inherit" />
