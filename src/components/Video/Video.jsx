@@ -5,15 +5,9 @@ import axios from 'axios';
 import { useLanguage } from '../../context/langContext';
 import Loading from '../Loading/Loading';
 import EpisodeCard from '../EpisodeCard/EpisodeCard';
-// import videojs from 'video.js'
 import VideoPlayer from "../CUSTOM_VIDEO_PLAYER/VideoPlayer";
 
-// import 'videojs-mobile-ui/dist/videojs-mobile-ui.css';
-// import '@videojs/themes/dist/fantasy/index.css';
-// import 'videojs-mobile-ui';
 import "./Video.css";
-// import "videojs-hotkeys";
-// import "videojs-seek-buttons";
 
 import fakeImg from "../../images/NoImg.png";
 
@@ -29,11 +23,11 @@ const Video = () => {
   };
 
   const [showScrollIndicator, setShowScrollIndicator] = useState(false);
-  const [crrLoaded, setcrrLoaded] = useState(false);
+  // const [crrLoaded, setcrrLoaded] = useState(false);
 
   // <Route path='/video/:animeID/:episodeNum/:episodeID/:providerID/:subType/:server?/:apiKey?' element={<Video/>}/>
   const [videoSrc, setvideoSrc] = useState([]);
-  const [quality, setquality] = useState([]);
+  // const [quality, setquality] = useState([]);
   const [allEpisodes, setallEpisodes] = useState([]);
   const [isLoading, setisLoading] = useState(false);
 
@@ -41,7 +35,7 @@ const Video = () => {
     src: "",
     quality: ""
   });
-  const [oldVideoURL, setoldVideoURL] = useState("");
+  // const [oldVideoURL, setoldVideoURL] = useState("");
   const [values, setValues] = useState({
     Animetitle: {
       english: "",
@@ -232,244 +226,12 @@ const Video = () => {
         }));
         
         setisLoading(false);
-        setcrrLoaded(false);
+        // setcrrLoaded(false);
         // console.log({ idk: "video srcc" }, { videoSrc });
       }
     }
   }, [videoSrc])
 
-  // useEffect(()=>{
-  //   console.log({currentVideoFIX:currentVideo.src});
-  // },[currentVideo])
-  // const initializeVideoJS = () => {
-  //   // Check if Video.js is already initialized on the video element
-  //   if (!videojs.getPlayers()[videoRef.current.id]) {
-
-  //     const videoPlayer = videojs(videoRef.current, {
-  //       controls: true,
-  //       autoplay: false,
-  //       preload: 'auto',
-  //       fluid: true,
-  //       aspectRatio: '16:9',
-  //       userActions: {
-  //         click: true,
-  //         // hotkeys: true,
-  //       },
-  //       playbackRates: [0.25, 0.5, 1, 1.5, 2, 2.5, 3, 4],
-  //       controlBar: {
-  //         fullscreenToggle: true,
-  //         // progressControl: true,
-  //         // seekToLive: true,
-  //         timeDivider: false, // Show the time divider (default is true)
-  //         durationDisplay: true, // Show the duration display (default is true)
-  //       },
-  //     });
-
-
-  //     videoPlayer.mobileUi({
-  //       fullscreen: {
-  //         enterOnRotate: true,
-  //         exitOnRotate: true,
-  //         lockOnRotate: true,
-  //         lockToLandscapeOnEnter: true,
-  //         disabled: false,
-  //       },
-  //       touchControls: {
-  //         seekSeconds: 10,
-  //         tapTimeout: 300,
-  //         disableOnEnd: false,
-  //         disabled: false,
-  //       },
-  //     });
-
-  //     videoPlayer.hotkeys({
-  //       volumeStep: 0.1,
-  //       seekStep: 10,
-  //       enableModifiersForNumbers: false
-  //     });
-
-  //   }
-
-  // };
-
-  // useEffect(()=>{
-  //   initializeVideoJS();
-  // },[])
-
-  // const hls = new Hls();
-  // useEffect(() => {
-  //   const video = videoRef.current;
-  //   // console.log({crrr:currentVideo.src},{oldVideoURL:oldVideoURL})
-
-  //   if ((currentVideo.src !== "" || oldVideoURL !== "")) {
-  //     if(currentVideo.src !== oldVideoURL){
-
-  //     if (!crrLoaded) {
-  //       initializeVideoJS();
-  //       if (Hls.isSupported()) {
-  //         hls.loadSource(currentVideo.src);
-  //         setoldVideoURL(currentVideo.src);
-  //         hls.on(Hls.Events.MANIFEST_PARSED, (event, data) => {
-  //           // window.hls = hls
-  //           const availableQualities = hls.levels.map((l) => l.height)
-  //           setquality({
-  //             default: data.levels[hls.startLevel].height,
-  //             options: availableQualities,
-  //           })
-  //           // console.log('Height:', data.levels[hls.startLevel].height);
-
-  //           // console.log(hls.levels)
-  //         })
-  //         hls.on(Hls.Events.LEVEL_SWITCHED, (evt, data) => {
-  //           const level = hls.levels[data.level];
-  //           if (level) {
-  //             setquality(d=>({
-  //               ...d,
-  //               default:level.height,
-  //             }))
-  //               // console.log(`qualityChange ${level.width}x${level.height}`);
-  //           }
-  //         });
-
-          
-
-  //         hls.attachMedia(video);
-  //         window.hls = hls;
-  //         setcrrLoaded(true);
-  //       } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-  //         video.src = videoSrc[0].url;
-  //       }
-  //       // console.log("if"+{crrr:currentVideo.src},{oldVideoURL})
-  //       const storedTime = localStorage.getItem(storageKey);
-  //       if (storedTime && video) {
-  //         video.currentTime = parseFloat(storedTime);
-  //       }
-  //     }
-  //   }
-
-  //   }
-  // }, [currentVideo]);
-
-  // const updateQuality = (newQuality) => {
-  //   window.hls.levels.forEach((level, i) => {
-  //     if (level.height === newQuality) {
-  //       window.hls.currentLevel = i
-  //     }
-  //   })
-  // }
-  // useEffect(() => {
-  //   console.log({ quality: quality })
-  // }, [quality])
-
-  // useEffect(() => {
-  //   const storedTime = localStorage.getItem(storageKey);
-  //   if (storedTime && videoRef.current) {
-  //     videoRef.current.currentTime = parseFloat(storedTime);
-  //   }
-  // }, [storageKey]);
-
-  // const handleVideoTimeUpdate = () => {
-  //   if (videoRef.current) {
-  //     const currentTime = videoRef.current.currentTime;
-  //     localStorage.setItem(storageKey, currentTime);
-  //   }
-  // };
-
-  // const handleQuality = (e) => {
-  //   let target = e.target;
-  //   if (videoSrc.length > 0) {
-  //     setcrrLoaded(false);
-  //     switch (target.name) {
-  //       case "360": {
-  //         ////console.log("360p");
-  //         updateQuality(360)
-  //         setquality(d => ({
-  //           ...d,
-  //           default: 360,
-  //         }))
-  //         // const defaultURL = videoSrc.find(src => src.quality === "360p");
-  //         // setcurrentVideo(val => ({
-  //         //   ...val,
-  //         //   src: defaultURL.url,
-  //         //   quality: defaultURL.quality
-  //         // }));
-  //         ////console.log({ idk: "360p" }, currentVideo.src);
-
-  //         break;
-  //       }
-  //       case "480": {
-  //         ////console.log("480p");
-  //         updateQuality(480)
-  //         setquality(d => ({
-  //           ...d,
-  //           default: 480,
-  //         }))
-  //         // const defaultURL = videoSrc.find(src => src.quality === "480p");
-  //         // setcurrentVideo(val => ({
-  //         //   ...val,
-  //         //   src: defaultURL.url,
-  //         //   quality: defaultURL.quality
-  //         // }));
-  //         ////console.log({ idk: "480p" }, currentVideo.src);
-  //         break;
-  //       }
-  //       case "720": {
-  //         ////console.log("720p");
-  //         updateQuality(720)
-  //         setquality(d => ({
-  //           ...d,
-  //           default: 720,
-  //         }))
-  //         // const defaultURL = videoSrc.find(src => src.quality === "720p");
-  //         // setcurrentVideo(val => ({
-  //         //   ...val,
-  //         //   src: defaultURL.url,
-  //         //   quality: defaultURL.quality
-  //         // }));
-  //         ////console.log({ idk: "720p" }, currentVideo.src);
-  //         break;
-  //       }
-  //       case "1080": {
-  //         ////console.log("1080p");
-  //         updateQuality(1080);
-  //         setquality(d => ({
-  //           ...d,
-  //           default: 1080,
-  //         }))
-  //         // const defaultURL = videoSrc.find(src => src.quality === "1080p");
-  //         // setcurrentVideo(val => ({
-  //         //   ...val,
-  //         //   src: defaultURL.url,
-  //         //   quality: defaultURL.quality
-  //         // }));
-  //         ////console.log({ idk: "1080p" }, currentVideo.src);
-  //         break;
-  //       }
-  //       case "backup": {
-  //         ////console.log("backup");
-  //         const defaultURL = videoSrc.find(src => src.quality === "backup");
-  //         setcurrentVideo(val => ({
-  //           ...val,
-  //           src: defaultURL.url,
-  //           quality: defaultURL.quality
-  //         }));
-  //         ////console.log({ idk: "backup" }, currentVideo.src);
-  //         break;
-  //       }
-  //       default: {
-  //         ////console.log("default");
-  //         const defaultURL = videoSrc.find(src => src.quality === "default");
-  //         setcurrentVideo(val => ({
-  //           ...val,
-  //           src: defaultURL.url,
-  //           quality: defaultURL.quality
-  //         }));
-  //         ////console.log({ idk: "default" }, currentVideo.src);
-  //       }
-  //     }
-
-  //   }
-  // }
   const handleNavTPB = (e) => {
     if (e.currentTarget.name === "goTop") {
       ////console.log("goTOP")

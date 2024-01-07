@@ -12,7 +12,6 @@
     "@testing-library/user-event": "^13.5.0",
     "@videojs/themes": "^1.0.1",
     "axios": "^1.6.2",
-    "hls.js": "^1.4.14",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-player": "^2.14.1",
@@ -20,11 +19,6 @@
     "react-scripts": "5.0.1",
     "react-spinners": "^0.13.8",
     "screenfull": "^6.0.2",
-    "videojs-contrib-hls": "^5.15.0",
-    "videojs-hls-quality-selector": "^1.1.4",
-    "videojs-hotkeys": "^0.2.28",
-    "videojs-mobile-ui": "^1.1.1",
-    "videojs-seek-buttons": "^4.0.3",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
@@ -50,8 +44,5 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "devDependencies": {
-    "video.js": "^8.6.1"
   }
 }

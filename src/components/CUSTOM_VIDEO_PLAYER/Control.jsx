@@ -1,13 +1,12 @@
-import React, { useState } from 'react'
+import React from 'react'
 import {
     PlayArrow, Pause, FastForward,
     FastRewind, SkipNext, VolumeUp, VolumeOff,
     Settings, PictureInPictureAlt,
-    Tune, FullscreenExit, Fullscreen,
-    KeyboardArrowRight, KeyboardArrowLeft,
-    Crop169, Crop32, PictureInPicture
+    FullscreenExit, Fullscreen,
+    Crop32, PictureInPicture
 } from '@mui/icons-material';
-import { Slider, makeStyles } from '@mui/material';
+import { Slider } from '@mui/material';
 import "./Control.css"
 const Control = (prop) => {
     const {

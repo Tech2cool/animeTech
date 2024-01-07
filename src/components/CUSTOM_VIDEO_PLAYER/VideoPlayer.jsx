@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, {useRef, useState } from 'react';
 import ReactPlayer from 'react-player';
 import Container from '@mui/material/Container';
 import screenfull from 'screenfull';
