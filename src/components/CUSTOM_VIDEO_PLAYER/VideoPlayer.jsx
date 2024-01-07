@@ -7,17 +7,19 @@ import CircularProgress from '@mui/material/CircularProgress';
 import './VideoPlayer.css';
 import Control from './Control';
 import {
-  KeyboardArrowRight, KeyboardArrowLeft,Tune,PlayCircleFilledWhiteOutlined
+  KeyboardArrowRight, KeyboardArrowLeft, Tune, PlayCircleFilledWhiteOutlined
 } from '@mui/icons-material';
 // let count = 0;
-const VideoPlayer = ({url}) => {
+import { debounce } from 'lodash';
+
+const VideoPlayer = ({ url }) => {
   const playerRef = useRef(null);
   const playerContainerRef = useRef(null);
   const controlRef = useRef(null);
   const [showQuality, setShowQuality] = useState(false);
   const [showPlaybackRate, setshowPlaybackRate] = useState(false);
   const [showSetting, setShowSetting] = useState(false);
-  const [setting, setSetting]= useState(false);
+  const [setting, setSetting] = useState(false);
   const [levels, setLevels] = useState([]);
   const [currentQuality, setCurrentQuality] = useState(0);
   const playbackRates = [0.25, 0.50, 1.0, 1.50, 2.0, 2.50, 3.0]
@@ -29,46 +31,102 @@ const VideoPlayer = ({url}) => {
     played: 0,
     seeking: false,
     buffer: true,
-    isFullScreen:false,
-    pipMode:false,
-    showTitle:false,
-    title:null,
+    isFullScreen: false,
+    pipMode: false,
+    showTitle: false,
+    title: null,
+    totalSeekTime: 0,
   });
   const count = useRef(0);
+  const seekRate = 10;
   const [vSlider, setVSlider] = useState(false);
   //Destructuring the properties from the videoState
-  const { playing, muted, volume, playbackRate, played, seeking, buffer,isFullScreen,pipMode,title,showTitle} =videoState;
-  const currentTime = playerRef.current? playerRef.current.getCurrentTime(): "00:00";
+  const { playing, muted, volume, playbackRate, played, seeking, buffer,
+    isFullScreen, pipMode, title, showTitle, totalSeekTime } = videoState;
+  const currentTime = playerRef.current ? playerRef.current.getCurrentTime() : "00:00";
   const duration = playerRef.current ? playerRef.current.getDuration() : "00:00";
 
   const formatCurrentTime = formatTime(currentTime);
   const formatDuration = formatTime(duration);
+  const storageKey = `videoPlaybackTime_${url}`;
 
   const handlePlayerReady = () => {
     const internalPlayer = playerRef.current?.getInternalPlayer('hls');
+
     if (internalPlayer) {
       setLevels(internalPlayer.levels);
-      // console.log(internalPlayer.levels);
+
+      const storedTime = localStorage.getItem(storageKey);
+      playerRef.current.seekTo(parseFloat(storedTime));  
+    }
+    else {
+      const player = playerRef.current?.getInternalPlayer();
+      if (player) {
+        setCurrentQuality(player.videoHeight);
+      }
+      const storedTime = localStorage.getItem(storageKey);
+      playerRef.current.seekTo(parseFloat(storedTime));
+
     }
   };
-  const handleSetting = ()=>{
-    if(setting && showSetting){
+  const progressHandler = (state) => {
+      if (count.current > 2) {
+
+        setSetting(false);
+        setShowQuality(false);
+        setShowSetting(false);
+        setshowPlaybackRate(false);
+        setVSlider(false);
+        setVideoState({ ...videoState, showTitle: false })
+        setVideoState({ ...videoState, totalSeekTime: 0 })
+        controlRef.current.style.visibility = "hidden"; 
+      } else if (controlRef.current.style.visibility === "visible") {
+        count.current += 1;
+      }
+
+      if (!seeking) {
+        // setVideoState({ ...videoState, played: state.played });
+        // console.log(state)
+        setVideoState((prevVideoState) => ({
+          ...prevVideoState,
+          played: state.played,
+        }));
+
+        localStorage.setItem(storageKey, state.playedSeconds);
+      }
+      const internalPlayer = playerRef.current?.getInternalPlayer('hls');
+
+      if (internalPlayer) {
+        const newLevel = internalPlayer.currentLevel;
+        const initialHeight = internalPlayer.levels[newLevel]?.height;
+
+        if (initialHeight !== currentQuality) {
+          // console.log('Level changed:', initialHeight);
+          setCurrentQuality(initialHeight);
+        }
+      }
+      const player = playerRef.current?.getInternalPlayer();
+      if (player) {
+        player.videoHeight !== currentQuality && setCurrentQuality(player.videoHeight);
+        // console.log('Video resolution:', player.videoWidth, 'x', player.videoHeight);
+      }
+
+  };
+
+
+  const handleSetting = () => {
+    if (setting && showSetting) {
       setSetting(false);
       setShowSetting(false);
-    }else{
+    } else {
       setSetting(true);
       setShowSetting(true);
     }
     setShowQuality(false);
     setshowPlaybackRate(false);
-}
+  }
 
-  // const handlePlaybackRateChange = (e) => {
-  //   // setPlaybackRate(parseFloat(e.target.value));
-  //   setVideoState({ ...videoState, playbackRate: parseFloat(e.target.value) });
-
-  // };
-  const setPlaybackRate = (event)=>{
+  const setPlaybackRate = (event) => {
     const target = event.target;
     // console.log(rate);
     // setVideoState({...videoState, playbackRate: rate});
@@ -106,61 +164,53 @@ const VideoPlayer = ({url}) => {
         // Check if screen.orientation.unlock is supported before using it
         window?.screen?.orientation?.unlock?.();
       }
-  
+
       setVideoState({ ...videoState, isFullScreen: !videoState.isFullScreen });
     }
   };
-  
+  const [showRewindSeekTime, setShowRewindSeekTime] = useState(false);
+  const [showForwardSeekTime, setShowForwardSeekTime] = useState(false);
+
   const rewindHandler = () => {
-    //Rewinds the video player reducing 5
-    playerRef.current.seekTo(playerRef.current.getCurrentTime() - 5);
+    const newTime = playerRef.current.getCurrentTime() - seekRate;
+    playerRef.current.seekTo(newTime);
+
+    setVideoState({ ...videoState, totalSeekTime: seekRate })
+    setShowRewindSeekTime(true);
+    setTimeout(() => {
+      setShowRewindSeekTime(false);
+    }, 3000);
   };
 
   const handleFastFoward = () => {
-    //FastFowards the video player by adding 10
-    playerRef.current.seekTo(playerRef.current.getCurrentTime() + 10);
+    const newTime = playerRef.current.getCurrentTime() + seekRate;
+    playerRef.current.seekTo(newTime);
+
+    setVideoState({ ...videoState, totalSeekTime: seekRate })
+    setShowForwardSeekTime(true);
+    setTimeout(() => {
+      setShowForwardSeekTime(false);
+      setVideoState({ ...videoState, totalSeekTime: 0 })
+    }, 3000);
   };
-  const progressHandler = (state) => {
-    if (count.current > 2) {
-      // console.log("close");
-      
-      setSetting(false);
-      setShowQuality(false);
-      setShowSetting(false);
-      setshowPlaybackRate(false);
-      setVSlider(false);
-      setVideoState({...videoState, showTitle:false})
-      controlRef.current.style.visibility = "hidden"; // toggling player control container
-    } else if (controlRef.current.style.visibility === "visible") {
-      count.current += 1;
-    }
 
-    if (!seeking) {
-      setVideoState({ ...videoState, ...state });
-    }
-    const internalPlayer = playerRef.current?.getInternalPlayer('hls');
-    
-    if (internalPlayer) {
-      const newLevel = internalPlayer.currentLevel;
-      const initialHeight = internalPlayer.levels[newLevel]?.height;
+  const debouncedHandleMiddleScreenClick = useRef(
+    debounce(() => {
+      setting && setSetting(false);
+      showQuality && setShowQuality(false);
+      showSetting && setShowSetting(false);
+      showPlaybackRate && setshowPlaybackRate(false);
+      vSlider && setVSlider(false);
+      controlRef.current.style.visibility = "hidden";
+    }, 300) // Adjust the debounce delay as needed (e.g., 300 milliseconds)
+  ).current;
 
-      if (initialHeight !== currentQuality) {
-        // console.log('Level changed:', initialHeight);
-        setCurrentQuality(initialHeight);
-      }
-    }
-
-  };
-  const handleMiddleScreenClick =()=>{
-    setting && setSetting(false);
-    showQuality && setShowQuality(false);
-    showSetting && setShowSetting(false);
-    showPlaybackRate && setshowPlaybackRate(false);
-    vSlider && setVSlider(false);
-    controlRef.current.style.visibility = "hidden"; // toggling player control container
+  const handleMiddleScreenClick = () => {
+    debouncedHandleMiddleScreenClick();
   }
 
   const seekHandler = (e, value) => {
+    // console.log("seek to " +value)
     setVideoState({ ...videoState, played: parseFloat(value / 100) });
     playerRef.current.seekTo(parseFloat(value / 100));
   };
@@ -194,7 +244,7 @@ const VideoPlayer = ({url}) => {
 
   const muteHandler = () => {
     //Mutes the video player
-    setVideoState({ ...videoState, muted: !videoState.muted, volume: videoState.volume <=0?1:0 });
+    setVideoState({ ...videoState, muted: !videoState.muted, volume: videoState.volume <= 0 ? 1 : 0 });
   };
 
   const onSeekMouseDownHandler = (e) => {
@@ -204,7 +254,7 @@ const VideoPlayer = ({url}) => {
   const mouseMoveHandler = () => {
     controlRef.current.style.visibility = "visible";
     count.current = 0;
-    setVideoState({...videoState, showTitle:true})
+    setVideoState({ ...videoState, showTitle: true })
   };
 
   const bufferStartHandler = () => {
@@ -217,14 +267,14 @@ const VideoPlayer = ({url}) => {
     setVideoState({ ...videoState, buffer: false });
   };
   // ${isFullScreen ? ' fullscreen' : ''}
-  const showQualitesSetting = ()=>{
+  const showQualitesSetting = () => {
     setShowQuality(!showQuality);
     setShowSetting(!showSetting);
   }
-  const showPlaybackSetting = ()=>{
+  const showPlaybackSetting = () => {
     setshowPlaybackRate(!showPlaybackRate);
     setShowSetting(!showSetting);
-    
+
   }
   const onChangeBitrate = (event) => {
     const internalPlayer = playerRef.current?.getInternalPlayer('hls');
@@ -233,42 +283,28 @@ const VideoPlayer = ({url}) => {
       const target = event.target;
       internalPlayer.currentLevel = parseInt(target.dataset.id, 10);
       // console.log(target.dataset.id);
-      setShowQuality(!showQuality);
-      setSetting(false);
-      setShowSetting(false);
     }
-  };
-  const [totalSeekedTime, setTotalSeekedTime] = useState(0);
-  const [doubleClickCount, setDoubleClickCount] = useState(0);
-
-  const handleDoubleClick = (e) => {
-    // Check if the event occurred within a short time interval
-    if (e.timeStamp - (doubleClickCount > 0 ? doubleClickCount[doubleClickCount.length - 1] : 0) < 300) {
-      // Double-click detected
-      const currentTime = e.target.currentTime;
-      setTotalSeekedTime((prevTotalSeekedTime) => prevTotalSeekedTime + currentTime);
-    }
-
-    // Update double click count with the current timestamp
-    setDoubleClickCount((prevClicks) => [...prevClicks, e.timeStamp]);
+    setShowQuality(!showQuality);
+    setSetting(false);
+    setShowSetting(false);
   };
 
   return (
     <div className={`video_container`}>
       {
-        playing && buffer &&(
+        playing && buffer && (
           <div className={`loadingContainer`}>
-          <CircularProgress />
-          {/* {buffer && <p>Loading</p>} */}
+            <CircularProgress />
+            {/* {buffer && <p>Loading</p>} */}
           </div>
         )
       }
 
       <Container maxWidth="ld" disableGutters>
-        <div 
-        ref={playerContainerRef}
-        className="player_wrapper" 
-        onMouseMove={mouseMoveHandler}
+        <div
+          ref={playerContainerRef}
+          className="player_wrapper"
+          onMouseMove={mouseMoveHandler}
         >
           <ReactPlayer
             controls={false}
@@ -277,6 +313,7 @@ const VideoPlayer = ({url}) => {
             url={url}
             // url={`https://www095.vipanicdn.net/streamhls/96ce3697d00eda7a1b385426479d135c/ep.1.1704477243.m3u8`}
             // url={`https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4`}
+            // url={`https://dl6.webmfiles.org/big-buck-bunny_trailer.webm`}
             width={"100%"}
             height={"100%"}
             className="player"
@@ -291,63 +328,78 @@ const VideoPlayer = ({url}) => {
             onBufferEnd={bufferEndHandler}
           />
 
-        <Control 
-          controlRef={controlRef}
-          onPlayPause={playPauseHandler}
-          playing={playing}
-          showTitle={showTitle}
-          title={title}
-          onRewind={rewindHandler}
-          onForward={handleFastFoward}
-          played={played}
-          onSeek={seekHandler}
-          onSeekMouseUp={seekMouseUpHandler}
-          volume={volume}
-          onVolumeChangeHandler={volumeChangeHandler}
-          onVolumeSeekUp={volumeSeekUpHandler}
-          mute={muted}
-          onMute={muteHandler}
-          duration={formatDuration}
-          currentTime={formatCurrentTime}
-          onMouseSeekDown={onSeekMouseDownHandler}
-          isFullScreen={isFullScreen}
-          handleFullScreen={handleFullScreen}
-          pip={pipMode}
-          handlePip={handlePip}
-          setVSlider={setVSlider}
-          vSlider={vSlider}
-          showSetting={showSetting}
-          setting={setting}
-          handleSetting={handleSetting}
-          handleMiddleScreenClick={handleMiddleScreenClick}
-          totalSeekedTime={totalSeekedTime}
-        />
-        <div className={`setting_wrapper${setting?" active":""}`}>
-          <div className={`quality_wrapper${showQuality?" active":""}`}>
-            <li onClick={showQualitesSetting}><span><KeyboardArrowLeft /> Quality</span></li>
-            {/* <li>1080P</li> */}
-            {levels.map((level, i) => ( 
-            <li key={i} data-id={i} 
-            onClick={onChangeBitrate}
-            className={`quality_li${currentQuality === level.height? " active":""}`}
-            > {level.height}P </li>)).reverse()}
+          <Control
+            controlRef={controlRef}
+            onPlayPause={playPauseHandler}
+            playing={playing}
+            showTitle={showTitle}
+            title={title}
+            onRewind={rewindHandler}
+            onForward={handleFastFoward}
+            played={played}
+            onSeek={seekHandler}
+            onSeekMouseUp={seekMouseUpHandler}
+            volume={volume}
+            onVolumeChangeHandler={volumeChangeHandler}
+            onVolumeSeekUp={volumeSeekUpHandler}
+            mute={muted}
+            onMute={muteHandler}
+            duration={formatDuration}
+            currentTime={formatCurrentTime}
+            onMouseSeekDown={onSeekMouseDownHandler}
+            isFullScreen={isFullScreen}
+            handleFullScreen={handleFullScreen}
+            pip={pipMode}
+            handlePip={handlePip}
+            setVSlider={setVSlider}
+            vSlider={vSlider}
+            showSetting={showSetting}
+            setting={setting}
+            handleSetting={handleSetting}
+            handleMiddleScreenClick={handleMiddleScreenClick}
+            totalSeekTime={totalSeekTime}
+            showRewindSeekTime={showRewindSeekTime}
+            showForwardSeekTime={showForwardSeekTime}
+          />
+          <div className={`setting_wrapper${setting ? " active" : ""}`}>
+            <div className={`quality_wrapper${showQuality ? " active" : ""}`}>
+              <li onClick={showQualitesSetting}><span><KeyboardArrowLeft /> Quality</span></li>
+              {
+                levels && levels.length > 0 ? (
+                  levels.map((level, i) => (
+                    <li key={i} data-id={i}
+                      onClick={onChangeBitrate}
+                      className={`quality_li${currentQuality === level.height ? " active" : ""}`}
+                    > {level.height}P </li>)).reverse()
+                )
+                  : (
+                    <li
+                      data-id={currentQuality}
+                      onClick={() => {
+                        setCurrentQuality(currentQuality);
+                        onChangeBitrate();
+                      }}
+                      className={`quality_li active`}
+                    >{currentQuality}P</li>
+                  )
+              }
+            </div>
+            <div className={`playbackRate_wrapper${showPlaybackRate ? " active" : ""}`}>
+              <li onClick={showPlaybackSetting}><span><KeyboardArrowLeft /> Playback Speed</span></li>
+              {
+                playbackRates.map((rate, i) => (
+                  <li data-value={rate} key={i}
+                    onClick={setPlaybackRate}
+                    className={`playback_li${playbackRate === rate ? " active" : ""}`}
+                  >{rate}x</li>
+                ))
+              }
+            </div>
+            <div className={`settings${showSetting ? " active" : ""}`}>
+              <li onClick={showPlaybackSetting}><span><PlayCircleFilledWhiteOutlined /> Playback Speed</span> <span><p>{playbackRate}x</p> <KeyboardArrowRight /></span></li>
+              <li onClick={showQualitesSetting}><span><Tune /> Quality</span> <span><p>{currentQuality}P</p><KeyboardArrowRight /></span></li>
+            </div>
           </div>
-          <div className={`playbackRate_wrapper${showPlaybackRate?" active": ""}`}>
-          <li onClick={showPlaybackSetting}><span><KeyboardArrowLeft /> Playback Speed</span></li>
-            {
-              playbackRates.map((rate,i)=>(
-                <li data-value={rate} key={i}
-                onClick={setPlaybackRate}
-                className={`playback_li${playbackRate === rate?" active":""}`}
-                >{rate}x</li>
-              ))
-            }
-          </div>
-          <div className={`settings${showSetting?" active":""}`}>
-          <li onClick={showPlaybackSetting}><span><PlayCircleFilledWhiteOutlined/> Playback Speed</span> <span><p>{playbackRate}x</p> <KeyboardArrowRight /></span></li>
-          <li onClick={showQualitesSetting}><span><Tune/> Quality</span> <span><p>{currentQuality}P</p><KeyboardArrowRight /></span></li>
-          </div>
-        </div>
         </div>
       </Container>
     </div>

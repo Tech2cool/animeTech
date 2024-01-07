@@ -10,30 +10,36 @@ import {
 import { Slider, makeStyles } from '@mui/material';
 import "./Control.css"
 const Control = (prop) => {
-    const{ 
-        onPlayPause,playing, onRewind, onForward, played, onSeek, onSeekMouseUp, onVolumeChangeHandler, 
-        onVolumeSeekUp, volume, mute, onMute, duration, currentTime, onMouseSeekDown, handlePip, pip, 
-        controlRef, isFullScreen, handleFullScreen, vSlider, setVSlider, setting, handleSetting, 
-        handleMiddleScreenClick,title,showTitle,totalSeekedTime}= prop;
+    const {
+        onPlayPause, playing, onRewind, onForward, played, onSeek, onSeekMouseUp, onVolumeChangeHandler,
+        onVolumeSeekUp, volume, mute, onMute, duration, currentTime, onMouseSeekDown, handlePip, pip,
+        controlRef, isFullScreen, handleFullScreen, vSlider, setVSlider, setting, handleSetting,
+        handleMiddleScreenClick, title, showTitle, totalSeekTime, 
+        showRewindSeekTime,showForwardSeekTime } = prop;
     const handleVolumeSlide = () => {
         setVSlider(true);
     };
 
     return (
         <div className={`control_Container`} ref={controlRef}>
-            <div className={`top_container${showTitle?" active":""}`}>
-            <h2>{title}</h2>
+            <div className={`top_container${showTitle ? " active" : ""}`}>
+                <h2>{title}</h2>
             </div>
             <div className="mid_container">
-                <div className="icon_btn"
-                onDoubleClick={onRewind}
-                onClick={handleMiddleScreenClick}
-                id="rewind">
-                <FastRewind fontSize="inherit" />
+                <div className="rewind">
+                {showRewindSeekTime && (
+                    <p><FastRewind />-{totalSeekTime && totalSeekTime}</p>
+                )}
+                    <div className="icon_btn"
+                        onDoubleClick={onRewind}    
+                        onClick={handleMiddleScreenClick}
+                        id="rewind">
+                        <FastRewind fontSize="inherit" />
+                    </div>
                 </div>
                 <div className="icon_btn"
-                onClick={onPlayPause}
-                id='bigPlay'>
+                    onClick={onPlayPause}
+                    id='bigPlay'>
                     {
                         playing ? (
                             <Pause fontSize='inherit' />
@@ -42,11 +48,16 @@ const Control = (prop) => {
                         )
                     }
                 </div>
-                <div className="icon_btn"
-                onDoubleClick={onForward}
-                onClick={handleMiddleScreenClick} 
-                id="fastForward">
-                <FastForward fontSize="inherit" />
+                <div className="fastforward">
+                    {showForwardSeekTime && (
+                        <p>{totalSeekTime && totalSeekTime} <FastForward /></p>
+                    )}
+                    <div className="icon_btn"
+                        onDoubleClick={onForward}
+                        onClick={handleMiddleScreenClick}
+                        id="fastForward">
+                        <FastForward fontSize="inherit" />
+                    </div>
                 </div>
             </div>
             <div className="bottom_container">

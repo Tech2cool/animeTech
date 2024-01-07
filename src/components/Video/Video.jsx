@@ -199,7 +199,7 @@ const Video = () => {
 
   const videoRef = useRef(null);
   // const hlsRef = useRef(null);
-  const storageKey = `videoPlaybackTime_${episodeID}`;
+  // const storageKey = `videoPlaybackTime_${episodeID}`;
 
   useEffect(() => {
     if (!isRequestPending) {
@@ -360,6 +360,7 @@ const Video = () => {
   // useEffect(() => {
   //   console.log({ quality: quality })
   // }, [quality])
+
   // useEffect(() => {
   //   const storedTime = localStorage.getItem(storageKey);
   //   if (storedTime && videoRef.current) {
@@ -367,12 +368,12 @@ const Video = () => {
   //   }
   // }, [storageKey]);
 
-  const handleVideoTimeUpdate = () => {
-    if (videoRef.current) {
-      const currentTime = videoRef.current.currentTime;
-      localStorage.setItem(storageKey, currentTime);
-    }
-  };
+  // const handleVideoTimeUpdate = () => {
+  //   if (videoRef.current) {
+  //     const currentTime = videoRef.current.currentTime;
+  //     localStorage.setItem(storageKey, currentTime);
+  //   }
+  // };
 
   // const handleQuality = (e) => {
   //   let target = e.target;
