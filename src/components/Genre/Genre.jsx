@@ -10,11 +10,9 @@ import './Genre.css';
 
 const Genre = () => {
     const { genre } = useParams();
-    // console.log(genre)
     const [anime, setAnime] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPage, setTotalPage] = useState(null);
-    // const [title, settitle] = useState(null);
     const [isLoading, setisLoading] = useState(false);
 
     const fetchData = async (Title, page = 1) => {
@@ -35,7 +33,6 @@ const Genre = () => {
     useEffect(() => {
         if(genre || genre !== ""){
             fetchData(genre, 1);
-            // settitle(genre);
         }
     }, [genre])
     useEffect(() => {
@@ -54,56 +51,39 @@ const Genre = () => {
             setCurrentPage(currentPage + 1);
         }
     }
-    return (
-        <div className='genre-container'>
-            <h1 className='btn-genre'>{genre}</h1>
-            {/* <div className="text"><p>{genre}</p></div> */}
-            {
-                isLoading ? (
-                    <Loading LoadingType={"ScaleLoader"} color={"red"} />
-                ) : (
-                    <div className="genre-results">
-                        {
-                            anime && anime.length > 0 ? (
-                                <>
-                                    {
-                                        anime.map((anime, i) => (
-                                            <Link
-                                                to={`/anime-details/${anime.animeID}`}
-                                                key={i}>
-                                                <AnimeCard anime={anime} />
-                                            </Link>
-                                        ))
-                                    }
-                                </>
-                            ) : <div className="text"><p>Not Found</p></div>
-                        }
-                    </div>
-                )
-            }
-            {
-                anime && anime.length > 0 ? (
-                    <div className="genre-navigation">
-                        {
-                            currentPage > 1 && (
-                                <button type="button" name='prev' onClick={handleNavigation}>Prev</button>
-                            )
-                        }
-                        <div className="currentPage">
-                            <p>{currentPage}</p>
-                        </div>
-                        {
-                            currentPage < totalPage && (
-                                <button type="button" name='next' onClick={handleNavigation}>Next</button>
-                            )
-                        }
-                    </div>
-
-                ) : ""
-            }
-
-        </div>
-    )
+    
+return (
+    <div className='genre-container'>
+        <h1 className='btn-genre'>{genre}</h1>
+        {
+            isLoading ? (<Loading LoadingType={"ScaleLoader"} color={"red"} />) : 
+            (
+                <div className="genre-results">
+                { 
+                anime?.length > 0 ? (
+                anime.map((anime, i) => (
+                    <Link to={`/anime-details/${anime.animeID}`} key={i}>
+                        <AnimeCard anime={anime} />
+                    </Link>)))
+                    :(<div className="text"><p>Not Found</p></div>)
+                }
+                </div>
+            )
+        }
+        {
+        anime?.length > 0 ? (
+            <div className="genre-navigation">
+                {
+                    currentPage > 1 && (<button type="button" name='prev' onClick={handleNavigation}>Prev</button>)
+                }
+                <div className="currentPage"> <p>{currentPage}</p> </div>
+                {
+                    currentPage < totalPage && (<button type="button" name='next' onClick={handleNavigation}>Next</button>)
+                }
+            </div>) : null
+        }
+    </div>
+)
 }
 
 export default Genre

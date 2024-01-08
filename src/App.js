@@ -11,12 +11,12 @@ function App() {
       <LanguageProvider>
         <Navbar />
         <Routes>
-          <Route path='//:page?' element={
+          <Route path='/:page?' element={
             <Suspense fallback={<Loading LoadingType={"HashLoader"} color={"red"} />}>
               <Home />
             </Suspense>
           } />
-          <Route path='/search' element={
+          <Route path='/search/:qTitle?/:qPage?' element={
             <Suspense fallback={<Loading LoadingType={"HashLoader"} color={"red"} />}>
               <Search />
             </Suspense>
@@ -41,7 +41,7 @@ function App() {
               <NewSeason />
             </Suspense>
           } />
-          <Route path='/genre/:genre' element={
+          <Route path='/genre/:genre/:page?' element={
             <Suspense fallback={<Loading LoadingType={"HashLoader"} color={"red"} />}>
               <Genre />
             </Suspense>

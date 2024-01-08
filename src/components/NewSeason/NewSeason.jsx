@@ -40,20 +40,14 @@ const NewSeason = () => {
     if (e.currentTarget.name === "prev") {
       if(currentPage < 1) return;
 
-      //console.log("prev");
       fetchPupular(currentPage - 1);
-      // navigate(`/${currentPage - 1}`)
       setCurrentPage(currentPage - 1);
-      // setisLoading(true);
     }
     if (e.currentTarget.name === "next") {
       if (currentPage < 1 || currentPage >= totalPage)
         return;
       fetchPupular(currentPage + 1);
-      // navigate(`/${currentPage + 1}`)
       setCurrentPage(currentPage + 1);
-      //console.log("next")
-      // setisLoading(true);
     }
   }
 
@@ -61,40 +55,27 @@ const NewSeason = () => {
     <div className='newSeason-container'>
       <h1>New Season</h1>
       {
-        isLoading ? (
-          <Loading LoadingType={"ScaleLoader"} color={"red"} />
-        ) : (
-          <div className="newSeason-results">
-            {
-              anime && anime.length > 0 ? (
-                anime.map((anime, i) => (
-                  <Link
-                    to={`/anime-details/${anime.animeID && anime.animeID}`}
-                    key={i}>
-                    <AnimeCard anime={anime} />
-                  </Link>
-                ))
-              ) : ""
-            }
-          </div>
+        isLoading ? (<Loading LoadingType={"ScaleLoader"} color={"red"} />) : (
+        <div className="newSeason-results">
+          {
+            anime?.length > 0 ? (
+              anime.map((anime, i) => (
+                <Link to={`/anime-details/${anime.animeID && anime.animeID}`} key={i}>
+                  <AnimeCard anime={anime} />
+                </Link>))
+            ) : null
+          }
+        </div>
         )
       }
-
       <div className="newSeason-navigation">
         {
-              currentPage > 1 &&(
-                <button type="button" name='prev'onClick={handleNavigation}>Prev</button>
-              )
-            }
-          <div className="currentPage">
-            <p>{currentPage}</p>
-          </div>
-          { 
-            currentPage < totalPage &&(
-              <button type="button" name='next'onClick={handleNavigation}>Next</button>
-            )
-          }
-      
+          currentPage > 1 &&(<button type="button" name='prev'onClick={handleNavigation}>Prev</button>)
+        }
+        <div className="currentPage"> <p>{currentPage}</p> </div>
+        { 
+          currentPage < totalPage &&(<button type="button" name='next'onClick={handleNavigation}>Next</button>)
+        }
       </div>
 
     </div>

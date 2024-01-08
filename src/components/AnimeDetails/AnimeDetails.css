@@ -18,7 +18,6 @@
 
 .anime-d-poster {
     max-width: 400px;
-    /* width: 30px; */
     flex: none;
 }
 
@@ -40,7 +39,6 @@
     padding: 2px;
     font-weight: 600;
     white-space: nowrap;
-    /* margin: 10px 2px; */
     border-radius: 10px;
 }
 
@@ -53,9 +51,6 @@
     width: 60%;
     display: flex;
     flex-wrap: wrap;
-    /* justify-content: ; */
-    /* grid-template-columns: repeat(auto-fit, minmax(80px, 130px)); */
-    /* grid-template-rows: repeat(auto-fit, minmax(30px, 40px)); */
     gap: 10px;
 }
 
@@ -72,7 +67,6 @@
     box-shadow: 0 0 2px gray;
     font-size: 14px;
     background-color: rgba(45, 45, 45, 0.701);
-    /* color: var(--clr-dark); */
     box-shadow: 0 0 2px gray;
 }
 
@@ -90,7 +84,6 @@
     box-shadow: 0 0 2px gray;
     font-size: 14px;
     background-color: rgba(45, 45, 45, 0.701);
-    /* color: var(--clr-dark); */
     box-shadow: 0 0 2px gray;
     border: 1px solid rgb(255, 0, 0);
     box-shadow: 0 0 2px rgb(255, 0, 0);
@@ -263,13 +256,9 @@
     right: 0;
     bottom: 13%;
     width: 50px;
-    /* height: 50px; */
-    /* background-color: white; */
     display: inline-flex;
     flex-direction: column;
     gap: 10px;
-    /* display: none; */
-    /* visibility: hidden; */
 }
 .tpBtns button{
     width: 40px;
@@ -317,8 +306,6 @@
 
     .anime-d-poster {
         max-width: 350px;
-        /* height: 100%; */
-        /* width: 30px; */
         flex: none;
     }
 
@@ -350,14 +337,12 @@
     }
 
     #anim-desc {
-        /* max-height: 10ch; */
         overflow: scroll;
         max-width: 100%;
         text-overflow: ellipsis;
     }
 
     .anime-d-info {
-        /* flex: none; */
         flex-wrap: wrap;
         margin: 0 2px;
     }
@@ -386,11 +371,9 @@
     .anime-genres {
         width: 100%;
         flex-wrap: wrap;
-        /* border: 2px solid rebeccapurple; */
         gap: 5px;
         font-size: 14px;
         padding: 0px 5px;
-        /* margin: 0; */
         justify-content: flex-start;
     }
 
@@ -403,13 +386,10 @@
     .anim-genre p {
         font-size: 14px;
         font-weight: 400;
-        /* white-space: pre-wrap; */
-
     }
 
     .anime-cards {
         width: 100%;
-        /* border: 2px solid red; */
         display: flex;
         margin: 10px 0;
         flex-wrap: wrap;

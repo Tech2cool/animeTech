@@ -1,25 +1,32 @@
-import React,{useState, useEffect,useRef} from 'react'
+import React,{useState, useEffect} from 'react'
 import axios from 'axios';
 
-import {Link} from 'react-router-dom';
+import {Link, useParams, useNavigate} from 'react-router-dom';
 
 import AnimeCard from "../AnimeCard/AnimeCard";
 import Loading from '../Loading/Loading';
+import useDebounce from '../useDebounce/useDebounce';
 
 import './Search.css';
 
 const Search = () => {
+  const { qTitle,qPage } = useParams();
+  const navigate = useNavigate();
 
   const [anime, setAnime] = useState([]);
+  const [isLoading, setisLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPage, setTotalPage] = useState(null);
-  const [title, settitle] = useState('');
-  const [isLoading, setisLoading] = useState(false);
-
-  const fetchData = async(titlte,page)=>{
+  const [title, setTitle] = useState(undefined);
+  
+  const debouncedSearch = useDebounce(title,500);
+  const seturlParms= ()=>{
+    navigate(`/search/${debouncedSearch}/${currentPage}`)
+  }
+  const fetchData = async(sTitle,sPage)=>{
     try {
       setisLoading(true);
-      const result = await axios.get(`https://gogo-server.vercel.app/search?title=${encodeURIComponent(titlte)}&page=${page}`)
+      const result = await axios.get(`https://gogo-server.vercel.app/search?title=${encodeURIComponent(sTitle)}&page=${sPage}`)
       if(result.data){
         // console.log({result1_Data:"result1_Data"}, result.data);
         setAnime(result.data.list);
@@ -31,114 +38,69 @@ const Search = () => {
       setisLoading(false)
     }
   }
-
-  // useEffect(()=>{
-  //   fetchData("one piece",1)
-  // },[])
-  const timeoutIdRef = useRef(null);
-
+  const handleInput = (e)=>{
+    setTitle(e.target.value);
+  }
   useEffect(()=>{
-    clearTimeout(timeoutIdRef.current);
-    timeoutIdRef.current = setTimeout(() => {
-      fetchData(title,currentPage);
-      // console.log("t + c")
-    }, 200);
-    return () => {
-      // Cleanup: clear the timeout when the component is unmounted
-      clearTimeout(timeoutIdRef.current);
-    };
-    // window.scroll({behavior:"instant"})
-    // window.scroll(0,0)
-  },[currentPage])
-
+    debouncedSearch !== ""&&
+    seturlParms();
+  },[debouncedSearch,currentPage])
+  // const timeoutIdRef = useRef(null);
   useEffect(()=>{
-    clearTimeout(timeoutIdRef.current);
-    timeoutIdRef.current= setTimeout(() => {
-      fetchData(title,1);
-      // console.log("t + 1")
-    }, 200);
-    return () => {
-      // Cleanup: clear the timeout when the component is unmounted
-      clearTimeout(timeoutIdRef.current);
-    };
-
-  },[title])
+    fetchData(debouncedSearch,currentPage);
+  },[qTitle,qPage])
 
 
   const handleNavigation= (e)=>{
     if(e.target.name === "prev"){
       if(currentPage < 1) return;
-
-        //console.log("prev");
-        // fetchData(currentPage-1);
-        // navigate(`/${currentPage - 1}`)
         setCurrentPage(currentPage-1);
-        // setisLoading(true);
     }
     if(e.target.name === "next"){
       if(currentPage < 1 || currentPage >= totalPage) 
       return;
-      // fetchData(currentPage+1);
-      // navigate(`/${currentPage + 1}`)
       setCurrentPage(currentPage+1);
-      //console.log("next")
-      // setisLoading(true);
     }
   }
+
+  const renderAnimes = ()=>{
+    if(qTitle === undefined || qTitle.trim() ==="" || debouncedSearch.trim()==="")
+      return(<div className="text"><p>Search your anime ex.(one piece)</p></div>)
+
+    if(anime.length<=0) 
+      return(<div className="text"><p>Not Found</p></div>)
+
+    return(
+        anime.map((anime,i)=>(
+          <Link to={`/anime-details/${anime.animeID}`} key={i}>
+          <AnimeCard anime={anime}/>
+          </Link>
+        ))
+    )
+  }
+  const renderNavigation = ()=>{
+    if(anime.length <=0) return null;
+    
+    return(
+      <div className="search-navigation">
+        {currentPage > 1 && (<button type="button" name='prev'onClick={handleNavigation}>Prev</button>) }
+        <div className="currentPage"> <p>{currentPage}</p> </div>
+        {currentPage < totalPage && (<button type="button" name='next'onClick={handleNavigation}>Next</button>) }
+      </div>
+    )
+  }
+
   return (
     <div className='search-container'>
       <div className="searchbar">
-        <input type="text" name="search" id="search" placeholder='search..' value={title} onChange={(e)=> settitle(e.target.value)}/>
+        <input type="text" name="search" id="search" placeholder='search..' value={title} onChange={handleInput}/>
         <i className='fa-solid fa-search'></i>
       </div>
       {
-        isLoading?(
-          <Loading LoadingType={"ScaleLoader"} color={"red"}/>
-        ):(
-          <div className="search-results">
-          {
-            title?(
-              anime && anime.length>0?(
-                <>
-              {
-                anime.map((anime,i)=>(
-                  <Link
-                  to={`/anime-details/${anime.animeID}`} 
-                  key={i}>
-                  <AnimeCard anime={anime}/>
-                  </Link>
-                ))
-              }
-                </>
-              ): <div className="text"><p>Not Found</p></div>  
-            ):(
-              <div className="text"><p>Search your anime ex.(one piece)</p></div>
-            )
-          }
-        </div>  
-        )
+        isLoading?(<Loading LoadingType={"ScaleLoader"} color={"red"}/>):
+        (<div className="search-results">{renderAnimes()}</div>)
       }
-      {
-        anime && anime.length >0?(
-          <div className="search-navigation">
-            {
-              currentPage > 1 &&(
-                <button type="button" name='prev'onClick={handleNavigation}>Prev</button>
-              )
-            }
-          <div className="currentPage">
-            <p>{currentPage}</p>
-          </div>
-          { 
-            currentPage < totalPage &&(
-              <button type="button" name='next'onClick={handleNavigation}>Next</button>
-            )
-          }
-        </div>
-
-        ):""
-      }
-
+      {renderNavigation()}
     </div>
   )
 }

@@ -1,7 +1,6 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
-// import Hls from 'hls.js';
 import { useLanguage } from '../../context/langContext';
 import Loading from '../Loading/Loading';
 import EpisodeCard from '../EpisodeCard/EpisodeCard';
@@ -23,11 +22,7 @@ const Video = () => {
   };
 
   const [showScrollIndicator, setShowScrollIndicator] = useState(false);
-  // const [crrLoaded, setcrrLoaded] = useState(false);
-
-  // <Route path='/video/:animeID/:episodeNum/:episodeID/:providerID/:subType/:server?/:apiKey?' element={<Video/>}/>
   const [videoSrc, setvideoSrc] = useState([]);
-  // const [quality, setquality] = useState([]);
   const [allEpisodes, setallEpisodes] = useState([]);
   const [isLoading, setisLoading] = useState(false);
 
@@ -35,7 +30,6 @@ const Video = () => {
     src: "",
     quality: ""
   });
-  // const [oldVideoURL, setoldVideoURL] = useState("");
   const [values, setValues] = useState({
     Animetitle: {
       english: "",
@@ -50,7 +44,6 @@ const Video = () => {
   });
   let isMobile;
 
-  // ////console.log(useParams());
   let isRequestPending = false;
   let timeoutOccurred = false;
 
@@ -106,7 +99,6 @@ const Video = () => {
       console.error(error)
       setisLoading(false);
     }
-    // setisLoading(false);
     finally {
       isRequestPending = false;
       setisLoading(false);
@@ -115,14 +107,11 @@ const Video = () => {
 
   const fetchAllEpisode = async (animID) => {
     isRequestPending = true;
-
-    // ////console.log("FetchAllEpisodes start")
     try {
       //console.log(values.AdditonalInfo.AdditionalInfo.id)
-      const result3 = await axios.get(`https://gogo-server.vercel.app/episodes?animeID=${encodeURIComponent(values.AnimeID)}&kid=${values.AdditonalInfo.AdditionalInfo.id}`, { timeout: 5000 })
+      const result3 = await axios.get(`https://gogo-server.vercel.app/episodes?animeID=${encodeURIComponent(animID)}&kid=${values.AdditonalInfo.AdditionalInfo.id}`, { timeout: 5000 })
       setallEpisodes(result3.data);
       // console.log({ ep: result3.data })
-
     } catch (error) {
       if (axios.isCancel(error)) {
         console.log('Request canceled', error.message);
@@ -136,12 +125,7 @@ const Video = () => {
     finally {
       isRequestPending = false;
     }
-    // ////console.log(result3.data)
     ////console.log({ result_data_3: "result.data 3" }, result3.data);
-
-    // if(result3.data.length>0){
-    // ////console.log("FetchAllEpisodes done")
-    // }
   }
 
   useEffect(() => {
@@ -191,20 +175,14 @@ const Video = () => {
   };
 
 
-  const videoRef = useRef(null);
-  // const hlsRef = useRef(null);
-  // const storageKey = `videoPlaybackTime_${episodeID}`;
-
   useEffect(() => {
     if (!isRequestPending) {
-      // console.log('Request already pending. Ignoring duplicate request.');
       fetchSrc();
     }
   }, [episodeID]);
 
 
   useEffect(() => {
-    // ////console.log(values)
     if (values.AnimeID !== "") {
       if (!isRequestPending) {
         fetchAllEpisode(values.AnimeID);
@@ -226,7 +204,6 @@ const Video = () => {
         }));
         
         setisLoading(false);
-        // setcrrLoaded(false);
         // console.log({ idk: "video srcc" }, { videoSrc });
       }
     }
@@ -234,7 +211,6 @@ const Video = () => {
 
   const handleNavTPB = (e) => {
     if (e.currentTarget.name === "goTop") {
-      ////console.log("goTOP")
       if (isMobile) {
         window.scroll(0, 0);
         document.querySelector(".allEpisodes").scroll(0, 0)
@@ -245,168 +221,95 @@ const Video = () => {
 
     }
     if (e.currentTarget.name === "goDown") {
-      ////console.log("goDown")
       if (isMobile) {
         window.scroll(0, document.body.scrollHeight);
         document.querySelector(".allEpisodes").scrollTop = document.querySelector(".allEpisodes").scrollHeight;
       } else {
-        // window.scroll(0,(document.body.scrollHeight-500));
         window.scroll(0, document.body.scrollHeight);
         document.querySelector(".allEpisodes").scrollTop = document.querySelector(".allEpisodes").scrollHeight;
       }
     }
   }
-  // const [toggle, settoggle] = useState(false);
-  // useEffect(() => {
-  //   const toggleBtn = document.querySelector(".toggle");
-  //   const qBtns = document.querySelectorAll(".vidSrc");
-
-  //   if (toggleBtn.classList.contains('active')) {
-  //     qBtns.forEach(btn => {
-  //       btn.style.display = "block";
-  //     });
-  //   } else {
-  //     qBtns.forEach(btn => {
-  //       btn.style.display = btn.classList.contains('active') ? "block" : "none";
-  //     });
-
-  //   }
-  // }, [toggle]);
 
   function handlePrev() {
     if (episodeNum !== null && episodeNum > 1) {
       let currentEpNumb = Number(episodeNum);
       let prevEpisodeNum = currentEpNumb - 1;
-      // console.log(prevEpisodeNum);
 
       let prevEpisodeID = episodeID.replace(currentEpNumb, prevEpisodeNum);
-      // console.log(prevEpisodeID);
 
       let prevAnimeTitle = values.Animetitle.english_jp ? values.Animetitle.english_jp : values.Animetitle.english;
-      // let prevIsDub = isDub;
-
-      // navigateToPlay(ep.id, ep.number, encodeURIComponent(values.Animetitle), values.AnimeID)
       navigateToPlay(prevEpisodeID, prevEpisodeNum, encodeURIComponent(prevAnimeTitle), values.AnimeID);
     }
-    // else{
-    //     console.log("cant be less than 1");
-    // }
+
   }
 
   function handleNext() {
     if (episodeNum > 0 && episodeNum < allEpisodes.length) {
       let currentEpNumb = Number(episodeNum);
       let nextEpisodeNum = currentEpNumb + 1;
-      //console.log(nextEpisodeNum);
 
       let nextEpisodeID = episodeID.replace(currentEpNumb, nextEpisodeNum);
-      //console.log(nextEpisodeID);
 
       let nextAnimeTitle = values.Animetitle.english_jp ? values.Animetitle.english_jp : values.Animetitle.english;
-      // let nextIsDub = isDub;
 
       navigateToPlay(nextEpisodeID, nextEpisodeNum, encodeURIComponent(nextAnimeTitle), values.AnimeID);
-      // navigateToPlay(nextEpisodeID,nextEpisodeNum,nextAnimeTitle,nextIsDub);
     }
-    // else{
-    //     console.log("cant be more than" + allEpisodes.length);
-    // }
   }
 
   return (
     <div className='video-container'>
       {
-        isLoading ? (
-          <Loading LoadingType={"HashLoader"} color={"red"} />
-        ) :
-          (
-            <div className="video">
-
-              <div className="video-title">
-                <div className="video-poster">
-                  <img src={values.imgURL && values.imgURL ? values.imgURL : fakeImg} alt={values.Animetitle && values.Animetitle} />
-                </div>
-
-                <div className="video-info">
-                  <p id='viat'>{
-                    currentLang === "en" ? (
-                      (values.Animetitle && (values.Animetitle.english && values.Animetitle.english ? values.Animetitle.english : values.Animetitle.english_jp))
-                    ) : (
-                      values.Animetitle && (values.Animetitle.english_jp && values.Animetitle.english_jp ? values.Animetitle.english_jp : values.Animetitle.japanese))
-                  }</p>
-                  <div className="video-ep-num">
-                    <p>Episode <span>{values.EpisodeNumber && values.EpisodeNumber}</span></p>
-                    <p id='epTitle'>
-                      {
-                        allEpisodes &&
-                        allEpisodes.length > 0 &&
-                        allEpisodes[Number(values.EpisodeNumber) - 1] && (
-                          (allEpisodes[Number(values.EpisodeNumber) - 1].title ? (
-                            (allEpisodes[Number(values.EpisodeNumber) - 1].title.english &&
-                              allEpisodes[Number(values.EpisodeNumber) - 1].title.english) ||
-                            (allEpisodes[Number(values.EpisodeNumber) - 1].title.english_jp &&
-                              allEpisodes[Number(values.EpisodeNumber) - 1].title.english_jp) ||
-                            (allEpisodes[Number(values.EpisodeNumber) - 1].title.japanese &&
-                              allEpisodes[Number(values.EpisodeNumber) - 1].title.japanese) || null
-                          ) : null)
-                        )
-                      }</p>
-                  </div>
-                </div>
+        isLoading ? (<Loading LoadingType={"HashLoader"} color={"red"} />) :
+        (
+          <div className="video">
+            <div className="video-title">
+              <div className="video-poster">
+                <img src={values.imgURL && values.imgURL ? values.imgURL : fakeImg} alt={values.Animetitle && values.Animetitle} />
               </div>
-
-              <div className="video-src">
-                <VideoPlayer url={currentVideo.src} />
-                {/* <video ref={videoRef}
-                  className='video-js vjs-big-play-centered vjs-theme-fantasy'
-                  // controls
-                  onTimeUpdate={handleVideoTimeUpdate}
-                ></video> */}
-              </div>
-              {/* <div className="video-qualities">
-
-                {
-                  videoSrc && videoSrc.length > 0 ? (
-                    <>
-                      {
-                        quality.options?.map((src) => (
-                          <button className={`vidSrc ${quality.default === src ? 'active' : ''}`} type="button" name={src} onClick={handleQuality} key={src}>{src}P</button>
-                        ))
-
-                      }
-                    <button className={`vidSrc ${currentVideo.quality === "backup" ? 'active' : ''}`} type="button" name={"backup"} onClick={handleQuality}>backup</button>
-                    </>
-                    // videoSrc.map(src => (
-                    // ))
-                  ) : ("")
-                }
-                <button
-                  type="button"
-                  className={`toggle ${toggle ? "active" : ""}`}
-                  onClick={() => settoggle(!toggle)}
-                >
-                  <i className='fa-solid fa-angles-left'></i>Quality
-                </button>
-              </div> */}
-              <div className="video-home">
-                {/* <Link to={`/`} >
-                    <i className='fa-solid fa-home'></i>
-                  </Link> */}
-                {episodeNum > 1 ? (
-                  <button type="button" className='btn btn-prev' onClick={handlePrev} >Prev</button>
-                ) : ""}
-                <Link to={`/anime-details/${values.AnimeID}`} >
-                  <i className='fa-solid fa-home'></i>
-                </Link>
-                {
-                  episodeNum < allEpisodes.length ? (
-                    <button type="button" className='btn btn-next' onClick={handleNext} >Next</button>
-                  ) : ""
-                }
-
+              <div className="video-info">
+                <p id='viat'>{
+                  currentLang === "en" ? (
+                    (values.Animetitle && (values.Animetitle.english && values.Animetitle.english ? values.Animetitle.english : values.Animetitle.english_jp))
+                  ) : (
+                    values.Animetitle && (values.Animetitle.english_jp && values.Animetitle.english_jp ? values.Animetitle.english_jp : values.Animetitle.japanese))
+                }</p>
+                <div className="video-ep-num">
+                  <p>Episode <span>{values.EpisodeNumber && values.EpisodeNumber}</span></p>
+                  <p id='epTitle'>
+                    {
+                      allEpisodes &&
+                      allEpisodes.length > 0 &&
+                      allEpisodes[Number(values.EpisodeNumber) - 1] && (
+                        (allEpisodes[Number(values.EpisodeNumber) - 1].title ? (
+                          (allEpisodes[Number(values.EpisodeNumber) - 1].title.english &&
+                            allEpisodes[Number(values.EpisodeNumber) - 1].title.english) ||
+                          (allEpisodes[Number(values.EpisodeNumber) - 1].title.english_jp &&
+                            allEpisodes[Number(values.EpisodeNumber) - 1].title.english_jp) ||
+                          (allEpisodes[Number(values.EpisodeNumber) - 1].title.japanese &&
+                            allEpisodes[Number(values.EpisodeNumber) - 1].title.japanese) || null
+                        ) : null)
+                      )
+                    }</p>
+                </div>
               </div>
             </div>
-          )
+            <div className="video-src">
+              <VideoPlayer url={currentVideo.src} />
+            </div>
+            <div className="video-home">
+              {
+                episodeNum > 1 && (<button type="button" className='btn btn-prev' onClick={handlePrev} >Prev</button>)
+              }
+              <Link to={`/anime-details/${values.AnimeID}`} >
+                <i className='fa-solid fa-home'></i>
+              </Link>
+              {
+                episodeNum < allEpisodes.length && (<button type="button" className='btn btn-next' onClick={handleNext} >Next</button>)
+              }
+            </div>
+          </div>
+        )
       }
       <div className="allEpisodes">
         {
