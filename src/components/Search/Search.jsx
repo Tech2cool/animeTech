@@ -17,7 +17,7 @@ const Search = () => {
   const [isLoading, setisLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPage, setTotalPage] = useState(null);
-  const [title, setTitle] = useState(undefined);
+  const [title, setTitle] = useState("");
   
   const debouncedSearch = useDebounce(title,500);
   const seturlParms= ()=>{
@@ -64,7 +64,7 @@ const Search = () => {
   }
 
   const renderAnimes = ()=>{
-    if(qTitle === undefined || qTitle.trim() ==="" || debouncedSearch.trim()==="")
+    if(qTitle === null || qTitle?.trim() ==="" || debouncedSearch?.trim()==="")
       return(<div className="text"><p>Search your anime ex.(one piece)</p></div>)
 
     if(anime.length<=0) 

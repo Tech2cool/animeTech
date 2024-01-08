@@ -162,7 +162,9 @@ const VideoPlayer = ({ url }) => {
     setshowPlaybackRate(false);
 
   }
-
+  const handleVideoEnd = ()=>{
+    playPauseHandler();
+  }
   const playPauseHandler = () => {
     //plays and pause the video (toggling)
     setVideoState({ ...videoState, playing: !videoState.playing });
@@ -183,6 +185,7 @@ const VideoPlayer = ({ url }) => {
           window?.screen?.orientation?.lock('landscape')?.catch(error => {
             console.error('Unable to lock screen orientation:', error);
           });
+          playerContainerRef.current.focus({focusVisible: true})
         }
       } else {
         // Exiting fullscreen
@@ -304,7 +307,7 @@ const VideoPlayer = ({ url }) => {
     setShowSetting(!showSetting);
 
   }
-  const onChangeBitrate = (event) => {
+  const onChangeQualityLevels = (event) => {
     const internalPlayer = playerRef.current?.getInternalPlayer('hls');
     if (internalPlayer) {
       // currentLevel expects to receive an index of the levels array
@@ -316,7 +319,6 @@ const VideoPlayer = ({ url }) => {
     setSetting(false);
     setShowSetting(false);
   };
-
   const handleKeyDown = (event) => {
     // You can check for specific key codes or key values here
     switch (event.keyCode) {
@@ -377,8 +379,9 @@ const VideoPlayer = ({ url }) => {
           ref={playerContainerRef}
           className="player_wrapper"
           onMouseMove={mouseMoveHandler}
-          tabIndex={0} onKeyDown={handleKeyDown}
+          tabIndex={0} 
           onFocus={handleFocus} onBlur={handleBlur}
+          onKeyDown={handleKeyDown}
         >
           <ReactPlayer
             controls={false}
@@ -400,6 +403,7 @@ const VideoPlayer = ({ url }) => {
             onProgress={progressHandler}
             onBuffer={bufferStartHandler}
             onBufferEnd={bufferEndHandler}
+            onEnded={handleVideoEnd}
           />
 
           <Control
@@ -442,7 +446,7 @@ const VideoPlayer = ({ url }) => {
                 levels && levels.length > 0 ? (
                   levels.map((level, i) => (
                     <li key={i} data-id={i}
-                      onClick={onChangeBitrate}
+                      onClick={onChangeQualityLevels}
                       className={`quality_li${currentQuality === level.height ? " active" : ""}`}
                     > {level.height}P </li>)).reverse()
                 )
@@ -451,7 +455,7 @@ const VideoPlayer = ({ url }) => {
                       data-id={currentQuality}
                       onClick={() => {
                         setCurrentQuality(currentQuality);
-                        onChangeBitrate();
+                        onChangeQualityLevels();
                       }}
                       className={`quality_li active`}
                     >{currentQuality}P</li>
