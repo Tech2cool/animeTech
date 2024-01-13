@@ -6,6 +6,7 @@ import Loading from '../Loading/Loading';
 import {useParams, useNavigate } from 'react-router-dom';
 
 import "./Home.css";
+import ExtraNavbar from '../ExtraNavbar/ExtraNavbar';
 
 const Home = () => {
   const navigate = useNavigate();
@@ -69,6 +70,7 @@ const Home = () => {
     <div className='home-container'>
       <div className="home-title">
         <h1>Latest</h1>
+        <ExtraNavbar />
       </div>
       {
         isLoading ? (

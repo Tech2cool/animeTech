@@ -4,6 +4,7 @@ import { Home, Search, Popular, Video, AnimeDetails, Navbar, NavbarBottom, Genre
 import { LanguageProvider } from './context/langContext';
 
 import './App.css';
+import Schedule from './components/Schedule/Schedule';
 
 function App() {
   return (
@@ -44,6 +45,11 @@ function App() {
           <Route path='/genre/:genre/:page?' element={
             <Suspense fallback={<Loading LoadingType={"HashLoader"} color={"red"} />}>
               <Genre />
+            </Suspense>
+          } />
+          <Route path='/schedule/:day?/:page?' element={
+            <Suspense fallback={<Loading LoadingType={"HashLoader"} color={"red"} />}>
+              <Schedule />
             </Suspense>
           } />
           <Route path='*' element={

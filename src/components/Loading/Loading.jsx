@@ -7,6 +7,7 @@ import ClimbingBoxLoader from "react-spinners/ClimbingBoxLoader";
 import HashLoader from "react-spinners/HashLoader";
 import PuffLoader from "react-spinners/PuffLoader";
 import RotateLoader from "react-spinners/RotateLoader";
+import ClockLoader from "react-spinners/ClockLoader";
 
 import "./Loading.css";
 
@@ -38,6 +39,9 @@ const Loading = ({ LoadingType, color }) => {
     }
     else if (LoadingType === "RotateLoader") {
       content = (<RotateLoader color={color}/>)
+    }
+    else if (LoadingType === "ClockLoader") {
+      content = (<ClockLoader color={color}/>)
     }
     else{
       content = (<ClipLoader color="#f20101" size={60} />)

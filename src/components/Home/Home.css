@@ -6,6 +6,9 @@
 }
 .home-title{
     padding: 4px 10px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
 }
 .home-grid{
     display: grid;
