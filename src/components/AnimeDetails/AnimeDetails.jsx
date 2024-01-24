@@ -145,11 +145,11 @@ const AnimeDetails = () => {
                 <div className="anime-d-info">
                   <h1>{
                     currentLang === "en" ? (
-                      (animeDetail.Title && animeDetail.Title.english && animeDetail.Title.english) ||
-                      (animeDetail.Title && animeDetail.Title.english_jp && animeDetail.Title.english_jp)
+                      (animeDetail.animeTitle && animeDetail.animeTitle.english && animeDetail.animeTitle.english) ||
+                      (animeDetail.animeTitle && animeDetail.animeTitle.english_jp && animeDetail.animeTitle.english_jp)
                     ) : (
-                      (animeDetail.Title && animeDetail.Title.english_jp && animeDetail.Title.english_jp) ||
-                      (animeDetail.Title && animeDetail.Title.japanese && animeDetail.Title.japanese)
+                      (animeDetail.animeTitle && animeDetail.animeTitle.english_jp && animeDetail.animeTitle.english_jp) ||
+                      (animeDetail.animeTitle && animeDetail.animeTitle.japanese && animeDetail.animeTitle.japanese)
                     )
                   }</h1>
                   {
@@ -222,9 +222,9 @@ const AnimeDetails = () => {
                     episodes && episodes.length > 0 ? (
                       episodes.map(ep => (
                         <Link
-                          to={`/video/${ep.id}/${ep.number}/${(animeDetail.Title && animeDetail.Title.english_jp && animeDetail.Title.english_jp) ||
-                            (animeDetail.Title && animeDetail.Title.japanese && animeDetail.Title.japanese) ||
-                            (animeDetail.Title && animeDetail.Title.english && animeDetail.Title.english)
+                          to={`/video/${ep.id}/${ep.number}/${(animeDetail.animeTitle && animeDetail.animeTitle.english_jp && animeDetail.animeTitle.english_jp) ||
+                            (animeDetail.animeTitle && animeDetail.animeTitle.japanese && animeDetail.animeTitle.japanese) ||
+                            (animeDetail.animeTitle && animeDetail.animeTitle.english && animeDetail.animeTitle.english)
                             }/${animeID}`}
                           key={ep.number}
                         >
