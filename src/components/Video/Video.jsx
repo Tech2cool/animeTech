@@ -20,7 +20,12 @@ const Video = () => {
     const url = `/video/${episodeId}/${episodeNum}/${animeTitle}/${animeId}`;
     navigate(url);
   };
-
+  const isValidData = (data)=>{
+    if(data === undefined ||data === null ||data === "null" ||data === "undefined"||data === ""){
+      return false
+    }
+    return true
+  }
   const [showScrollIndicator, setShowScrollIndicator] = useState(false);
   const [videoSrc, setvideoSrc] = useState([]);
   const [allEpisodes, setallEpisodes] = useState([]);
@@ -42,43 +47,47 @@ const Video = () => {
     EpisodeTitle: "",
     AdditonalInfo: [],
   });
+  const [myAnime, setMyAnime] = useState({})
   let isMobile;
 
   let isRequestPending = false;
   let timeoutOccurred = false;
-
+  let TheAnimeTitle, Poster;
+  if(isValidData(myAnime?.animeTitle)){
+    if(currentLang === "en"){
+      if(isValidData(myAnime?.animeTitle?.english)){
+        TheAnimeTitle = myAnime?.animeTitle?.english
+      }else if(isValidData(myAnime?.animeTitle?.english_jp)){
+        TheAnimeTitle = myAnime?.animeTitle?.english_jp
+      }
+    }else{
+      if(isValidData(myAnime?.animeTitle?.english_jp)){
+        TheAnimeTitle = myAnime?.animeTitle?.english_jp
+      }else if(isValidData(myAnime?.animeTitle?.japanese)){
+        TheAnimeTitle = myAnime?.animeTitle?.japanese
+      }
+    }
+  }
+  if(isValidData(myAnime?.animeImg)){
+    Poster = myAnime?.animeImg
+  }else{
+    Poster = fakeImg
+  }
   const fetchSrc = async () => {
     isRequestPending = true;
     try {
       setisLoading(true);
       const result = await axios.get(`https://gogo-server.vercel.app/source?episodeID=/${encodeURIComponent(episodeID)}`, { timeout: 5000 })
-     console.log({ result_data_1: "result.data 1" }, result.data);
+    //  console.log({ result_data_1: "result.data 1" }, result.data);
 
       setvideoSrc(result.data.sources);
       // ////console.log("result 1 done")
       // console.log(animeTitle);
-      const result2 = await axios.get(`https://gogo-server.vercel.app/search?title=${encodeURIComponent(animeTitle.split("Part")[0])}`, { timeout: 5000 });
-      if (result2.data.list.length > 0) {
-        // console.log({ result_data_2: "result.data 2" }, result2.data);
-        const res = result2.data.list[0];
-        setValues(value => ({
-          ...value,
-          Animetitle: {
-            english: (res.animeTitle && (res.animeTitle.english && res.animeTitle.english ? res.animeTitle.english : null)),
-            english_jp: (res.animeTitle && (res.animeTitle.english_jp && res.animeTitle.english_jp ? res.animeTitle.english_jp : animeTitle)),
-            japanese: (res.animeTitle && (res.animeTitle.japanese && res.animeTitle.japanese ? res.animeTitle.japanese : null)),
-          },
-          AnimeID: res.animeID && res.animeID ? res.animeID : "",
-          imgURL: res.animeImg && res.animeImg ? res.animeImg : "",
-          EpisodeNumber: Number(episodeNum),
-          AdditonalInfo: res,
-          // EpisodeTitle: result.data.animeTitle
-        }));
-      }
-      else {
+
         const result2 = await axios.get(`https://gogo-server.vercel.app/anime-details?animeID=${animeID}`, { timeout: 5000 })
-        // console.log({ result_data_22: "result.data 2" }, result2.data);
+        console.log({ result_data_22: "result.data 2" }, result2.data);
         const res = result2.data;
+        setMyAnime(res)
         setValues(value => ({
           ...value,
           Animetitle: {
@@ -93,7 +102,7 @@ const Video = () => {
           // EpisodeTitle: result.data.animeTitle
         }));
 
-      }
+
       setisLoading(false);
     } catch (error) {
       console.error(error)
@@ -265,15 +274,10 @@ const Video = () => {
           <div className="video">
             <div className="video-title">
               <div className="video-poster">
-                <img src={values.imgURL && values.imgURL ? values.imgURL : fakeImg} alt={values.Animetitle && values.Animetitle} />
+                <img src={Poster} alt={"Poster"} />
               </div>
               <div className="video-info">
-                <p id='viat'>{
-                  currentLang === "en" ? (
-                    (values.Animetitle && (values.Animetitle.english && values.Animetitle.english ? values.Animetitle.english : values.Animetitle.english_jp))
-                  ) : (
-                    values.Animetitle && (values.Animetitle.english_jp && values.Animetitle.english_jp ? values.Animetitle.english_jp : values.Animetitle.japanese))
-                }</p>
+                <p id='viat'>{TheAnimeTitle}</p>
                 <div className="video-ep-num">
                   <p>Episode <span>{values.EpisodeNumber && values.EpisodeNumber}</span></p>
                   <p id='epTitle'>
