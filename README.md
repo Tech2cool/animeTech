@@ -10,7 +10,7 @@
   <br />Aswell have as some basic animations.
   <li align="center">Responsive design</li>
 
-  <a href="https://animetech.vercel.app/"><strong>➥ Live Demo</strong></a>
+  <a href="[https://animetech.vercel.app/](https://github.com/Tech2cool/AnimeTech-V3-Website)"><strong>➥ This is older version please view newer version</strong></a>
 
 </div>
 
