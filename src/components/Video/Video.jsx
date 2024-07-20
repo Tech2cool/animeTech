@@ -77,14 +77,14 @@ const Video = () => {
     isRequestPending = true;
     try {
       setisLoading(true);
-      const result = await axios.get(`https://gogo-server.vercel.app/source?episodeID=/${encodeURIComponent(episodeID)}`, { timeout: 5000 })
+      const result = await axios.get(`https://ani-short.vercel.app/source?episodeID=/${encodeURIComponent(episodeID)}`, { timeout: 5000 })
     //  console.log({ result_data_1: "result.data 1" }, result.data);
 
       setvideoSrc(result.data.sources);
       // ////console.log("result 1 done")
       // console.log(animeTitle);
 
-        const result2 = await axios.get(`https://gogo-server.vercel.app/anime-details?animeID=${animeID}`, { timeout: 5000 })
+        const result2 = await axios.get(`https://ani-short.vercel.app/anime-details?animeID=${animeID}`, { timeout: 5000 })
         console.log({ result_data_22: "result.data 2" }, result2.data);
         const res = result2.data;
         setMyAnime(res)
@@ -118,7 +118,7 @@ const Video = () => {
     isRequestPending = true;
     try {
       //console.log(values.AdditonalInfo.AdditionalInfo.id)
-      const result3 = await axios.get(`https://gogo-server.vercel.app/episodes?animeID=${encodeURIComponent(animID)}&kid=${values.AdditonalInfo.AdditionalInfo.id}`, { timeout: 5000 })
+      const result3 = await axios.get(`https://ani-short.vercel.app/episodes?animeID=${encodeURIComponent(animID)}&kid=${values.AdditonalInfo.AdditionalInfo.id}`, { timeout: 5000 })
       setallEpisodes(result3.data);
       // console.log({ ep: result3.data })
     } catch (error) {

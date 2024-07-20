@@ -19,7 +19,7 @@ const Genre = () => {
         try {
             setisLoading(true);
 
-            const result = await axios.get(`https://gogo-server.vercel.app/genre/${encodeURIComponent(Title)}/${page}`);
+            const result = await axios.get(`https://ani-short.vercel.app/genre/${encodeURIComponent(Title)}/${page}`);
             //console.log({ result1_Data: "result1_Data" }, result.data);
             setAnime(result.data.list);
             setTotalPage(result.data.totalPages);

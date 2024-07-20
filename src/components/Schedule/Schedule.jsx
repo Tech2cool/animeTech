@@ -60,7 +60,7 @@ const Schedule = () => {
 
   const fetchSchedule = async (page = 1) => {
     try {
-      const { data } = await axios.get(`https://gogo-server.vercel.app/schedule?page=${page}`);
+      const { data } = await axios.get(`https://ani-short.vercel.app/schedule?page=${page}`);
       console.log(data);
       if (data?.schedulesByDay.length > 0) {
 
@@ -81,7 +81,7 @@ const Schedule = () => {
   const fetchData = async(sTitle,sPage=1)=>{
     try {
       // console.log(sTitle)
-      const result = await axios.get(`https://gogo-server.vercel.app/search?title=${encodeURIComponent(sTitle)}&page=${sPage}`)
+      const result = await axios.get(`https://ani-short.vercel.app/search?title=${encodeURIComponent(sTitle)}&page=${sPage}`)
       if(result.data){
         // console.log({result1_Data:"result1_Data"}, result.data);
         navigate(`/anime-details/${result.data.list[0].animeID}`)
@@ -119,7 +119,7 @@ const Schedule = () => {
       // console.log("length 0")
       const sapi_call = async () => {
 
-        const { data: nextPage } = await axios.get(`https://gogo-server.vercel.app/schedule?page=${upage + 1}`);
+        const { data: nextPage } = await axios.get(`https://ani-short.vercel.app/schedule?page=${upage + 1}`);
         // console.log("nextPage");
         if (nextPage?.schedulesByDay?.length > 0) {
 
